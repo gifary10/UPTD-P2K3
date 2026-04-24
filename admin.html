@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin · Lapor P2K3</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar d-flex flex-column">
+  <div class="brand">
+    <div class="brand-icon-box"><i class="bi bi-shield-check" style="color:white;"></i></div>
+    <span>Lapor P2K3</span>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">UTAMA</div>
+    <a href="#" class="nav-link active" data-page="dashboard"><i class="bi bi-house-door"></i> Dashboard</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">PENDAFTARAN</div>
+    <a href="#" class="nav-link" data-page="persetujuan" id="navPersetujuan"><i class="bi bi-clipboard-check"></i> Verifikasi Perusahaan</a>
+    <a href="#" class="nav-link" data-page="perusahaan"><i class="bi bi-building"></i> Daftar Perusahaan</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">LAPORAN</div>
+    <a href="#" class="nav-link" data-page="laporan-masuk" id="navLaporan"><i class="bi bi-inbox"></i> Laporan Disetujui</a>
+    <a href="#" class="nav-link" data-page="arsip"><i class="bi bi-archive"></i> Arsip Laporan</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">MANAJEMEN</div>
+    <a href="#" class="nav-link" data-page="users"><i class="bi bi-people"></i> Manajemen User</a>
+    <a href="#" class="nav-link" data-page="statistik"><i class="bi bi-bar-chart"></i> Statistik & Rekap</a>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<div class="navbar-custom">
+  <div class="page-title" id="pageTitle">Dashboard Admin</div>
+  <div class="d-flex align-items-center gap-2">
+    <button class="notif-btn" onclick="goPage('persetujuan')">
+      <i class="bi bi-bell" style="font-size:16px;color:#64748b;"></i>
+      <span class="notif-dot" id="notifDot" style="display:none;"></span>
+    </button>
+    <div class="user-badge">
+      <i class="bi bi-shield-lock" style="color:#0f9d58;"></i>
+      <span style="font-weight:600;">Admin UPTD</span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()"><i class="bi bi-box-arrow-right"></i> Keluar</button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="page-section active-page">
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div><div class="stat-label">Total Perusahaan</div><div class="stat-value" id="dashTotalPerusahaan">0</div><div class="stat-sub">Terverifikasi</div></div>
+            <div class="stat-icon icon-green"><i class="bi bi-building"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div><div class="stat-label">Menunggu Verifikasi</div><div class="stat-value" id="dashMenungguVerif">0</div><div class="stat-sub">Pengajuan baru</div></div>
+            <div class="stat-icon icon-yellow"><i class="bi bi-hourglass-split"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div><div class="stat-label">Laporan Siap Arsip</div><div class="stat-value" id="dashLaporanSiap">0</div><div class="stat-sub">Approved pengawas</div></div>
+            <div class="stat-icon icon-blue"><i class="bi bi-inbox"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div><div class="stat-label">Laporan Diarsipkan</div><div class="stat-value" id="dashArsip">0</div><div class="stat-sub">Total final</div></div>
+            <div class="stat-icon icon-purple"><i class="bi bi-archive"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="table-card">
+          <div class="section-header">
+            <div class="section-title"><i class="bi bi-clipboard-check me-2 text-warning"></i>Pengajuan Perusahaan Baru</div>
+            <a href="#" class="text-success small fw-semibold" onclick="goPage('persetujuan');return false;">Lihat semua →</a>
+          </div>
+          <div id="dashPengajuanList"></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-card">
+          <div class="section-header">
+            <div class="section-title"><i class="bi bi-inbox me-2 text-primary"></i>Laporan Siap Diarsipkan</div>
+            <a href="#" class="text-success small fw-semibold" onclick="goPage('laporan-masuk');return false;">Lihat semua →</a>
+          </div>
+          <div id="dashLaporanList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERIFIKASI PERUSAHAAN -->
+  <div id="persetujuan" class="page-section">
+    <div class="alert-info-soft mb-3">
+      <i class="bi bi-info-circle me-2"></i>Perusahaan berikut telah mendaftar dan menunggu verifikasi admin. Pilih pengawas yang sesuai untuk setiap perusahaan.
+    </div>
+    <div id="persetujuanList"><p class="text-muted">Tidak ada pengajuan yang menunggu.</p></div>
+  </div>
+
+  <!-- DAFTAR PERUSAHAAN -->
+  <div id="perusahaan" class="page-section">
+    <div class="table-card">
+      <div class="section-header">
+        <div class="section-title"><i class="bi bi-building me-2 text-success"></i>Semua Perusahaan Terdaftar</div>
+        <input type="text" class="form-control" style="width:220px;font-size:13px;" placeholder="Cari perusahaan..." id="searchPerusahaan" oninput="filterPerusahaan()">
+      </div>
+      <table class="table mb-0">
+        <thead><tr><th>Nama Perusahaan</th><th>Wilayah</th><th>Status</th><th></th></tr></thead>
+        <tbody id="perusahaanBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- LAPORAN DISETUJUI (siap arsip) -->
+  <div id="laporan-masuk" class="page-section">
+    <div class="alert-success-soft mb-3">
+      <i class="bi bi-check-circle me-2"></i>Laporan berikut telah diverifikasi oleh pengawas. Klik "Finalkan" untuk mengarsipkan laporan ke sistem.
+    </div>
+    <div id="laporanMasukList"><p class="text-muted">Tidak ada laporan yang menunggu finalisasi.</p></div>
+  </div>
+
+  <!-- ARSIP LAPORAN -->
+  <div id="arsip" class="page-section">
+    <div class="table-card">
+      <div class="section-header">
+        <div class="section-title"><i class="bi bi-archive me-2 text-primary"></i>Arsip Laporan P2K3</div>
+        <div class="d-flex gap-2">
+          <select class="form-select form-select-sm" style="width:140px;font-size:12.5px;" id="filterTahun" onchange="loadData()"><option value="">Semua Tahun</option><option>2026</option><option>2025</option><option>2024</option></select>
+          <button class="btn btn-sm btn-outline-green" style="font-size:12.5px;" onclick="showToast('Demo: Ekspor Excel belum tersedia')"><i class="bi bi-download me-1"></i>Ekspor Excel</button>
+        </div>
+      </div>
+      <table class="table mb-0">
+        <thead><tr><th>Perusahaan</th><th>Periode</th><th>Pengawas</th><th>Kecelakaan</th><th>PAK</th><th>Tgl Final</th><th>Status</th></tr></thead>
+        <tbody id="arsipBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MANAJEMEN USER -->
+  <div id="users" class="page-section">
+    <div class="row g-3 mb-3">
+      <div class="col-md-8">
+        <div class="table-card">
+          <div class="section-header">
+            <div class="section-title"><i class="bi bi-people me-2 text-success"></i>Daftar Pengguna Sistem</div>
+          </div>
+          <table class="table mb-0">
+            <thead><tr><th>Nama</th><th>Role</th><th>NIP / Email</th><th>Password</th><th>Status</th></tr></thead>
+            <tbody id="usersBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-card">
+          <h6 class="fw-bold mb-3"><i class="bi bi-person-plus me-2 text-success"></i>Tambah Akun Pengawas</h6>
+          <div class="mb-3">
+            <label class="form-label">Nama Pengawas</label>
+            <input type="text" class="form-control" id="newPwNama" placeholder="Nama lengkap">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">NIP</label>
+            <input type="text" class="form-control" id="newPwNip" placeholder="Nomor Induk Pegawai">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="text" class="form-control" id="newPwPassword" placeholder="Password untuk login">
+          </div>
+          <button class="btn-green btn w-100" onclick="tambahPengawas()"><i class="bi bi-save me-2"></i>Simpan Akun</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATISTIK -->
+  <div id="statistik" class="page-section">
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="stat-label">Total Perusahaan Aktif</div>
+          <div class="stat-value" id="statPerusahaan">0</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="stat-label">Total Laporan Masuk</div>
+          <div class="stat-value" id="statLaporan">0</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="stat-label">Total Kecelakaan Kerja (tercatat)</div>
+          <div class="stat-value" id="statKK">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="section-title mb-3"><i class="bi bi-bar-chart me-2 text-success"></i>Rekap Per Perusahaan</div>
+      <table class="table mb-0">
+        <thead><tr><th>Perusahaan</th><th>Total Laporan</th><th>Final</th><th>Total KK</th><th>Total PAK</th></tr></thead>
+        <tbody id="rekapBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL VERIFIKASI PERUSAHAAN -->
+<div class="modal-overlay" id="verifModal">
+  <div class="modal-box">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="fw-bold mb-0"><i class="bi bi-clipboard-check me-2 text-success"></i>Verifikasi & Tunjuk Pengawas</h6>
+      <button onclick="closeModal('verifModal')" style="background:none;border:none;font-size:18px;cursor:pointer;color:#64748b;">&times;</button>
+    </div>
+    <div class="alert-info-soft mb-3"><i class="bi bi-info-circle me-2"></i>Pilih pengawas yang akan menangani verifikasi perusahaan ini. Data akan dikirim ke pengawas terpilih.</div>
+    <table class="table table-sm mb-3">
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Nama</td><td id="vModalNama" style="font-size:13px;font-weight:600;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Alamat</td><td id="vModalAlamat" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Wilayah</td><td id="vModalWilayah" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Email Perusahaan</td><td id="vModalEmail" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Tgl Daftar</td><td id="vModalTglDaftar" style="font-size:13px;"></td></tr>
+    </table>
+    <input type="hidden" id="vModalId">
+    <div class="mb-3">
+      <label class="form-label">Pilih Pengawas</label>
+      <select class="form-select" id="vModalPengawas">
+        <option value="">-- Pilih Pengawas --</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Password Akun Perusahaan</label>
+      <input type="text" class="form-control" id="vModalKode" placeholder="Password yang akan dikirim via email">
+      <div class="form-text">Kosongkan untuk auto-generate. Akan dikirim ke email perusahaan bersama info akun.</div>
+    </div>
+    <div class="d-flex gap-2 justify-content-end">
+      <button class="btn btn-outline-danger" style="border-radius:6px;" onclick="tolakPerusahaan()"><i class="bi bi-x-lg me-1"></i>Tolak</button>
+      <button class="btn-green btn" id="btnVerifSetujui" onclick="setujuiPerusahaan()"><i class="bi bi-check-circle me-2"></i>Setujui & Kirim ke Pengawas</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FINALISASI LAPORAN -->
+<div class="modal-overlay" id="laporanModal">
+  <div class="modal-box">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="fw-bold mb-0">Finalisasi & Arsipkan Laporan</h6>
+      <button onclick="closeModal('laporanModal')" style="background:none;border:none;font-size:18px;cursor:pointer;color:#64748b;">&times;</button>
+    </div>
+    <div class="alert-success-soft mb-3"><i class="bi bi-check-circle me-2"></i>Laporan telah diverifikasi oleh pengawas. Siap difinalkan dan diarsipkan.</div>
+    <table class="table table-sm mb-3">
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Perusahaan</td><td id="lModalPerusahaan" style="font-size:13px;font-weight:600;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Periode</td><td id="lModalPeriode" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Disetujui Pengawas</td><td id="lModalTglApprove" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Kecelakaan Kerja</td><td id="lModalKK" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">PAK</td><td id="lModalPAK" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Catatan Pengawas</td><td id="lModalCatatan" style="font-size:13px;color:#64748b;"></td></tr>
+    </table>
+    <input type="hidden" id="lModalId">
+    <div class="mb-3">
+      <label class="form-label">Catatan Final Admin (opsional)</label>
+      <textarea class="form-control" id="lModalCatatanAdmin" rows="2" placeholder="Catatan tambahan admin..."></textarea>
+    </div>
+    <div class="d-flex gap-2 justify-content-end">
+      <button class="btn btn-outline-secondary" style="border-radius:var(--radius);" onclick="closeModal('laporanModal')">Batal</button>
+      <button class="btn-green btn" onclick="finalkanLaporan()"><i class="bi bi-check-circle me-2"></i>Finalkan & Arsipkan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"><i class="bi bi-check-circle me-2"></i><span id="toastMsg"></span></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  if (localStorage.getItem('p2k3_role') !== 'admin') window.location.href = 'login.html';
+
+  function getPengawasList() { return JSON.parse(localStorage.getItem('p2k3_pengawas_list') || '[]'); }
+  function getCompanies() { return JSON.parse(localStorage.getItem('p2k3_companies') || '[]'); }
+  function getLaporan() { return JSON.parse(localStorage.getItem('p2k3_laporan') || '[]'); }
+  function saveCompanies(arr) { localStorage.setItem('p2k3_companies', JSON.stringify(arr)); }
+  function saveLaporan(arr) { localStorage.setItem('p2k3_laporan', JSON.stringify(arr)); }
+  function savePengawasList(arr) { localStorage.setItem('p2k3_pengawas_list', JSON.stringify(arr)); }
+
+  function genKode(nama) {
+    return nama.replace(/[^a-zA-Z]/g,'').toUpperCase().substring(0,5) + new Date().getFullYear();
+  }
+
+  function loadData() {
+    const pengawasList = getPengawasList();
+    const companies = getCompanies();
+    const laporan = getLaporan();
+
+    const verified = companies.filter(c => c.status === 'verified');
+    const pendingAdmin = companies.filter(c => c.status === 'pending_admin' || c.status === 'pending_pengawas');
+    const approvedLaporan = laporan.filter(l => l.status === 'approved');
+    const finalLaporan = laporan.filter(l => l.status === 'final');
+
+    document.getElementById('dashTotalPerusahaan').textContent = verified.length;
+    document.getElementById('dashMenungguVerif').textContent = pendingAdmin.length;
+    document.getElementById('dashLaporanSiap').textContent = approvedLaporan.length;
+    document.getElementById('dashArsip').textContent = finalLaporan.length;
+
+    document.getElementById('notifDot').style.display = (pendingAdmin.length > 0 || approvedLaporan.length > 0) ? 'block' : 'none';
+
+    const navP = document.getElementById('navPersetujuan');
+    const oldP = navP.querySelector('.notif-badge');
+    if (oldP) oldP.remove();
+    if (pendingAdmin.length > 0) {
+      const b = document.createElement('span'); b.className = 'notif-badge'; b.textContent = pendingAdmin.length; navP.appendChild(b);
+    }
+    const navL = document.getElementById('navLaporan');
+    const oldL = navL.querySelector('.notif-badge');
+    if (oldL) oldL.remove();
+    if (approvedLaporan.length > 0) {
+      const b = document.createElement('span'); b.className = 'notif-badge'; b.textContent = approvedLaporan.length; navL.appendChild(b);
+    }
+
+    const dpl = document.getElementById('dashPengajuanList');
+    if (pendingAdmin.length === 0) {
+      dpl.innerHTML = '<p class="text-muted small py-2">Tidak ada pengajuan baru.</p>';
+    } else {
+      dpl.innerHTML = pendingAdmin.slice(0,3).map(c =>
+        `<div style="padding:10px 0;border-bottom:1px solid #f1f5f9;">
+          <div style="font-size:13.5px;font-weight:700;">${c.nama}</div>
+          <div style="font-size:12px;color:#64748b;">${c.wilayah} · ${c.tglDaftar}</div>
+          <button class="btn btn-sm btn-outline-warning mt-1" style="font-size:11.5px;" onclick="openVerifModal('${c.id}')"><i class="bi bi-clipboard-check me-1"></i>Verifikasi</button>
+        </div>`
+      ).join('');
+    }
+
+    const dll = document.getElementById('dashLaporanList');
+    if (approvedLaporan.length === 0) {
+      dll.innerHTML = '<p class="text-muted small py-2">Tidak ada laporan yang menunggu finalisasi.</p>';
+    } else {
+      dll.innerHTML = approvedLaporan.slice(0,3).map(l => {
+        const c = companies.find(x => x.id === l.companyId);
+        return `<div style="padding:10px 0;border-bottom:1px solid #f1f5f9;">
+          <div style="font-size:13.5px;font-weight:700;">${c?.nama || '—'}</div>
+          <div style="font-size:12px;color:#64748b;">${l.periode} · Disetujui: ${l.tglApprove}</div>
+          <button class="btn btn-sm btn-outline-primary mt-1" style="font-size:11.5px;" onclick="openLaporanModal('${l.id}')"><i class="bi bi-archive me-1"></i>Finalkan</button>
+        </div>`;
+      }).join('');
+    }
+
+    const psl = document.getElementById('persetujuanList');
+    if (pendingAdmin.length === 0) {
+      psl.innerHTML = '<p class="text-muted">Tidak ada pengajuan perusahaan yang menunggu verifikasi.</p>';
+    } else {
+      psl.innerHTML = pendingAdmin.map(c => {
+        let statusText = '';
+        if (c.status === 'pending_pengawas' && c.notifPengawas) {
+          const pw = pengawasList.find(p => p.id === c.notifPengawas);
+          statusText = `<span class="badge-status badge-pending" style="font-size:11px;">Dikirim ke Pengawas: ${pw?.nama || c.notifPengawas}</span>`;
+        } else {
+          statusText = `<span class="badge-status badge-pending" style="font-size:11px;">Menunggu Penunjukan Pengawas</span>`;
+        }
+        return `<div class="laporan-item">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <div style="font-size:14px;font-weight:700;">${c.nama}</div>
+              <div style="font-size:12.5px;color:#64748b;">${c.wilayah} · ${c.alamat} · Diajukan: ${c.tglDaftar}</div>
+              <div style="font-size:12.5px;color:#64748b;">Email: ${c.email || '—'}</div>
+              <div style="margin-top:4px;">${statusText}</div>
+            </div>
+            <button class="btn btn-sm btn-outline-success ms-2" onclick="openVerifModal('${c.id}')"><i class="bi bi-clipboard-check me-1"></i>Verifikasi</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    renderPerusahaan(companies);
+
+    const lml = document.getElementById('laporanMasukList');
+    if (approvedLaporan.length === 0) {
+      lml.innerHTML = '<p class="text-muted">Tidak ada laporan yang menunggu finalisasi.</p>';
+    } else {
+      lml.innerHTML = approvedLaporan.map(l => {
+        const c = companies.find(x => x.id === l.companyId);
+        return `<div class="laporan-item">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <div style="font-size:14px;font-weight:700;">${c?.nama || '—'}</div>
+              <div style="font-size:12.5px;color:#64748b;">${l.periode} · Submit: ${l.tglSubmit} · Disetujui Pengawas: ${l.tglApprove}</div>
+              <div style="font-size:12px;color:#92400e;margin-top:3px;"><i class="bi bi-chat-dots me-1"></i>${l.catatanPengawas || '—'}</div>
+              <div style="font-size:12px;color:#64748b;">KK: ${l.kkRingan + l.kkSedang + l.kkBerat + l.kkFatal || l.kecelakaanKerja || 0} | PAK: ${l.pak} | Rapat: ${l.meeting || l.rapatP2K3 || 0} | Inspeksi: ${l.inspeksiK3 || 0}</div>
+            </div>
+            <button class="btn btn-sm btn-outline-primary ms-2" onclick="openLaporanModal('${l.id}')"><i class="bi bi-archive me-1"></i>Finalkan</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    const tahunFilter = document.getElementById('filterTahun')?.value || '';
+    const arsipData = laporan.filter(l => l.status === 'final' && (!tahunFilter || String(l.tahun) === String(tahunFilter)));
+    document.getElementById('arsipBody').innerHTML = arsipData.length === 0
+      ? '<tr><td colspan="7" class="text-center text-muted py-3">Belum ada laporan diarsipkan</td></tr>'
+      : [...arsipData].reverse().map(l => {
+          const c = companies.find(x => x.id === l.companyId);
+          const pw = pengawasList.find(p => p.id === l.pengawasId);
+          const totalKK = l.kkRingan + l.kkSedang + l.kkBerat + l.kkFatal || l.kecelakaanKerja || 0;
+          return `<tr><td>${c?.nama || '—'}</td><td>${l.periode} ${l.tahun || ''}</td><td>${pw?.nama || '—'}</td><td>${totalKK}</td><td>${l.pak}</td><td>${l.tglFinal || '—'}</td><td><span class="badge-status badge-disetujui">Final</span></td></tr>`;
+        }).join('');
+
+    document.getElementById('usersBody').innerHTML = [
+      { nama:'Admin UPTD Wilayah II', role:'Admin', info:'admin@uptd.go.id', password:'admin123', status:'aktif' },
+      ...pengawasList.map(p => ({ nama: p.nama, role:'Pengawas', info: p.nip || '—', password: p.password || 'pw123', status:'aktif' })),
+      ...verified.map(c => ({ nama: c.nama, role:'Perusahaan', info: c.email, password: c.password || '****', status:'aktif' }))
+    ].map(u =>
+      `<tr><td>${u.nama}</td><td><span class="badge-status ${u.role === 'Admin' ? 'badge-ditolak' : u.role === 'Pengawas' ? 'badge-pending' : 'badge-draft'}">${u.role}</span></td><td style="font-size:12.5px;">${u.info}</td><td style="font-size:12.5px;">${u.password}</td><td><span class="badge-status badge-disetujui">Aktif</span></td></tr>`
+    ).join('');
+
+    document.getElementById('statPerusahaan').textContent = verified.length;
+    document.getElementById('statLaporan').textContent = laporan.length;
+    document.getElementById('statKK').textContent = laporan.reduce((s, l) => s + (l.kkRingan + l.kkSedang + l.kkBerat + l.kkFatal || l.kecelakaanKerja || 0), 0);
+
+    document.getElementById('rekapBody').innerHTML = verified.map(c => {
+      const cl = laporan.filter(l => l.companyId === c.id);
+      return `<tr><td>${c.nama}</td><td>${cl.length}</td><td>${cl.filter(l => l.status === 'final').length}</td><td>${cl.reduce((s, l) => s + (l.kkRingan + l.kkSedang + l.kkBerat + l.kkFatal || l.kecelakaanKerja || 0), 0)}</td><td>${cl.reduce((s, l) => s + l.pak, 0)}</td></tr>`;
+    }).join('') || '<tr><td colspan="5" class="text-center text-muted py-3">Belum ada data</td></tr>';
+  }
+
+  function tambahPengawas() {
+    const nama = document.getElementById('newPwNama').value.trim();
+    const nip = document.getElementById('newPwNip').value.trim();
+    const password = document.getElementById('newPwPassword').value.trim();
+    
+    if (!nama || !nip) {
+      showToast('Nama dan NIP wajib diisi!');
+      return;
+    }
+    
+    if (!password) {
+      showToast('Password wajib diisi!');
+      return;
+    }
+    
+    const pengawasList = getPengawasList();
+    const newId = 'pw' + (Date.now().toString(36));
+    
+    pengawasList.push({
+      id: newId,
+      nama: nama,
+      nip: nip,
+      password: password,
+      status: 'aktif'
+    });
+    
+    savePengawasList(pengawasList);
+    document.getElementById('newPwNama').value = '';
+    document.getElementById('newPwNip').value = '';
+    document.getElementById('newPwPassword').value = '';
+    showToast(`Pengawas ${nama} berhasil ditambahkan!`);
+    loadData();
+  }
+
+  function renderPerusahaan(companies) {
+    const q = (document.getElementById('searchPerusahaan')?.value || '').toLowerCase();
+    const filtered = companies.filter(c => c.nama.toLowerCase().includes(q));
+    document.getElementById('perusahaanBody').innerHTML = filtered.length === 0
+      ? '<tr><td colspan="4" class="text-center text-muted py-3">Belum ada data perusahaan</td></tr>'
+      : filtered.map(c => {
+          let statusBadge = '';
+          if (c.status === 'verified') {
+            statusBadge = '<span class="badge-status badge-disetujui">Aktif</span>';
+          } else if (c.status === 'pending_admin' || c.status === 'pending_pengawas') {
+            statusBadge = '<span class="badge-status badge-pending">Menunggu Verif.</span>';
+          } else {
+            statusBadge = '<span class="badge-status badge-draft">Draft</span>';
+          }
+          return `<tr>
+            <td>${c.nama}</td>
+            <td>${c.wilayah}</td>
+            <td>${statusBadge}</td>
+            <td><button class="btn btn-sm btn-outline-danger" style="font-size:11.5px;" onclick="hapusPerusahaan('${c.id}')"><i class="bi bi-trash"></i></button></td>
+          </tr>`;
+        }).join('');
+  }
+
+  window.filterPerusahaan = function() { renderPerusahaan(getCompanies()); };
+
+  function hapusPerusahaan(id) {
+    if (!confirm('Hapus perusahaan ini dari sistem?')) return;
+    const companies = getCompanies().filter(c => c.id !== id);
+    saveCompanies(companies);
+    showToast('Perusahaan dihapus dari sistem.');
+    loadData();
+  }
+
+  function openVerifModal(companyId) {
+    const pengawasList = getPengawasList();
+    const c = getCompanies().find(x => x.id === companyId);
+    if (!c) return;
+    
+    document.getElementById('vModalNama').textContent = c.nama;
+    document.getElementById('vModalAlamat').textContent = c.alamat;
+    document.getElementById('vModalWilayah').textContent = c.wilayah;
+    document.getElementById('vModalEmail').textContent = c.email || '—';
+    document.getElementById('vModalTglDaftar').textContent = c.tglDaftar || '—';
+    document.getElementById('vModalId').value = companyId;
+    document.getElementById('vModalKode').value = '';
+    
+    const selectPengawas = document.getElementById('vModalPengawas');
+    selectPengawas.innerHTML = '<option value="">-- Pilih Pengawas --</option>' + 
+      pengawasList.map(p => `<option value="${p.id}">${p.nama}${p.nip ? ' - NIP: ' + p.nip : ''}</option>`).join('');
+    
+    if (c.notifPengawas) {
+      selectPengawas.value = c.notifPengawas;
+    }
+    
+    document.getElementById('verifModal').classList.add('show');
+  }
+
+  function setujuiPerusahaan() {
+    const cId = document.getElementById('vModalId').value;
+    const pengawasId = document.getElementById('vModalPengawas').value;
+    let kode = document.getElementById('vModalKode').value.trim();
+    
+    if (!pengawasId) {
+      showToast('Pilih pengawas terlebih dahulu!');
+      return;
+    }
+    
+    const companies = getCompanies();
+    const idx = companies.findIndex(c => c.id === cId);
+    if (idx < 0) return;
+
+    if (!kode) kode = genKode(companies[idx].nama);
+    
+    companies[idx].status = 'pending_pengawas';
+    companies[idx].notifPengawas = pengawasId;
+    companies[idx].pengawasId = pengawasId;
+    companies[idx].password = kode;
+    companies[idx].catatanPengawas = 'Dikirim oleh admin untuk verifikasi pengawas.';
+    companies[idx].rekomenPengawas = null;
+    companies[idx].alasanRekomen = null;
+    
+    saveCompanies(companies);
+    closeModal('verifModal');
+    
+    const pengawasList = getPengawasList();
+    const pw = pengawasList.find(p => p.id === pengawasId);
+    showToast(`✓ Data perusahaan dikirim ke pengawas: ${pw?.nama || pengawasId}`);
+    loadData();
+  }
+
+  function tolakPerusahaan() {
+    if (!confirm('Tolak pengajuan perusahaan ini?')) return;
+    const cId = document.getElementById('vModalId').value;
+    const companies = getCompanies().filter(c => c.id !== cId);
+    saveCompanies(companies);
+    closeModal('verifModal');
+    showToast('Pengajuan perusahaan ditolak dan dihapus.');
+    loadData();
+  }
+
+  function openLaporanModal(laporanId) {
+    const laporan = getLaporan();
+    const l = laporan.find(x => x.id === laporanId);
+    if (!l) return;
+    const c = getCompanies().find(x => x.id === l.companyId);
+    document.getElementById('lModalPerusahaan').textContent = c?.nama || '—';
+    document.getElementById('lModalPeriode').textContent = `${l.periode} ${l.tahun || ''}`;
+    document.getElementById('lModalTglApprove').textContent = l.tglApprove || '—';
+    const totalKK = l.kkRingan + l.kkSedang + l.kkBerat + l.kkFatal || l.kecelakaanKerja || 0;
+    document.getElementById('lModalKK').textContent = totalKK + ' kasus';
+    document.getElementById('lModalPAK').textContent = l.pak + ' kasus';
+    document.getElementById('lModalCatatan').textContent = l.catatanPengawas || '—';
+    document.getElementById('lModalId').value = laporanId;
+    document.getElementById('lModalCatatanAdmin').value = '';
+    document.getElementById('laporanModal').classList.add('show');
+  }
+
+  function finalkanLaporan() {
+    const lId = document.getElementById('lModalId').value;
+    const today = new Date().toISOString().split('T')[0];
+    const laporan = getLaporan();
+    const idx = laporan.findIndex(l => l.id === lId);
+    if (idx >= 0) {
+      laporan[idx].status = 'final';
+      laporan[idx].tglFinal = today;
+      saveLaporan(laporan);
+    }
+    closeModal('laporanModal');
+    showToast('Laporan berhasil difinalkan dan diarsipkan!');
+    loadData();
+  }
+
+  const pageMap = { dashboard:'Dashboard Admin', persetujuan:'Verifikasi Perusahaan', perusahaan:'Daftar Perusahaan', users:'Manajemen User', 'laporan-masuk':'Laporan Disetujui Pengawas', arsip:'Arsip Laporan', statistik:'Statistik & Rekap' };
+
+  function goPage(id) {
+    document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
+    const t = document.getElementById(id);
+    if (t) t.classList.add('active-page');
+    document.getElementById('pageTitle').textContent = pageMap[id] || id;
+    document.querySelectorAll('.nav-link').forEach(l => { l.classList.remove('active'); if (l.dataset.page === id) l.classList.add('active'); });
+    window.scrollTo(0, 0);
+  }
+
+  document.querySelectorAll('.nav-link').forEach(l => l.addEventListener('click', e => { e.preventDefault(); goPage(l.dataset.page); }));
+
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+  document.getElementById('verifModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal('verifModal'); });
+  document.getElementById('laporanModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal('laporanModal'); });
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 4000);
+  }
+
+  function doLogout() {
+    localStorage.removeItem('p2k3_role');
+    window.location.href = 'login.html';
+  }
+
+  loadData();
+</script>
+</body>
+</html>

@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perusahaan · Lapor P2K3</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar d-flex flex-column">
+  <div class="brand">
+    <div class="brand-icon-box"><i class="bi bi-shield-check" style="color:white;"></i></div>
+    <span>Lapor P2K3</span>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">UTAMA</div>
+    <a href="#" class="nav-link active" data-page="dashboard"><i class="bi bi-house-door"></i> Dashboard</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">PELAPORAN</div>
+    <a href="#" class="nav-link" data-page="buat-laporan"><i class="bi bi-file-earmark-plus"></i> Buat Laporan</a>
+    <a href="#" class="nav-link" data-page="riwayat"><i class="bi bi-clock-history"></i> Riwayat Laporan</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">FEEDBACK</div>
+    <a href="#" class="nav-link" data-page="catatan" id="navCatatan"><i class="bi bi-chat-square-text"></i> Catatan Pengawas</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">DATA PERUSAHAAN</div>
+    <a href="#" class="nav-link" data-page="profil"><i class="bi bi-building"></i> Profil Perusahaan</a>
+    <a href="#" class="nav-link" data-page="struktur"><i class="bi bi-diagram-3"></i> Struktur P2K3</a>
+    <a href="#" class="nav-link" data-page="personil"><i class="bi bi-person-workspace"></i> Personil K3</a>
+    <a href="#" class="nav-link" data-page="dokumen"><i class="bi bi-cloud-upload"></i> Dokumen</a>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<div class="navbar-custom">
+  <div class="page-title" id="pageTitle">Dashboard Perusahaan</div>
+  <div class="d-flex align-items-center gap-2">
+    <button class="notif-btn" onclick="goPage('catatan')">
+      <i class="bi bi-bell" style="font-size:16px;color:#64748b;"></i>
+      <span class="notif-dot" id="notifDot" style="display:none;"></span>
+    </button>
+    <div class="user-badge">
+      <i class="bi bi-building" style="color:#0f9d58;"></i>
+      <span style="font-weight:600;" id="companyNameBadge">Perusahaan</span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()"><i class="bi bi-box-arrow-right"></i> Keluar</button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="page-section active-page">
+    <div class="sk-badge">
+      <div>
+        <div style="font-size:12px;color:#64748b;font-weight:600;">Status Akun</div>
+        <div style="font-size:13px;font-weight:700;color:#166534;"><i class="bi bi-check-circle me-1"></i>Terverifikasi</div>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div><div class="stat-label">Total Laporan</div><div class="stat-value" id="dashTotalLaporan">0</div><div class="stat-sub">Semua periode</div></div>
+            <div class="stat-icon icon-green"><i class="bi bi-file-earmark-text"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div><div class="stat-label">Status Terakhir</div><div class="stat-value" style="font-size:16px;" id="dashStatusTerakhir">—</div><div class="stat-sub">Laporan terbaru</div></div>
+            <div class="stat-icon icon-green"><i class="bi bi-check-circle"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div><div class="stat-label">Catatan Pengawas</div><div class="stat-value" id="dashCatatanCount">0</div><div class="stat-sub">Total catatan</div></div>
+            <div class="stat-icon icon-yellow"><i class="bi bi-chat-square-text"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div><div class="stat-label">Laporan Final</div><div class="stat-value" id="dashFinalCount">0</div><div class="stat-sub">Diarsipkan admin</div></div>
+            <div class="stat-icon icon-blue"><i class="bi bi-archive"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-7">
+        <div class="table-card">
+          <div class="section-header">
+            <div class="section-title"><i class="bi bi-clock-history me-2 text-success"></i>Riwayat Laporan</div>
+            <a href="#" class="text-success small fw-semibold" onclick="goPage('riwayat');return false;">Lihat semua →</a>
+          </div>
+          <table class="table mb-0">
+            <thead><tr><th>Periode</th><th>Tgl Submit</th><th>Status</th></tr></thead>
+            <tbody id="dashLaporanBody"><tr><td colspan="4" class="text-center text-muted py-3">Belum ada laporan</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="table-card h-100">
+          <div class="section-title mb-3"><i class="bi bi-chat-dots me-2 text-success"></i>Catatan Pengawas Terbaru</div>
+          <div id="dashCatatanList"><p class="text-muted small">Belum ada catatan.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUAT LAPORAN -->
+  <div id="buat-laporan" class="page-section">
+    <div class="alert-info-soft mb-4">
+      <i class="bi bi-info-circle me-2"></i>
+      Laporan semester wajib dikirimkan paling lambat 30 hari setelah akhir semester. Pastikan semua data lengkap sebelum mengirim.
+    </div>
+
+    <div class="step-bar mb-4">
+      <div class="step active" id="si1"><div class="step-num">1</div><div class="step-label">Info</div></div>
+      <div class="step" id="si2"><div class="step-num">2</div><div class="step-label">Data</div></div>
+      <div class="step" id="si3"><div class="step-num">3</div><div class="step-label">Program</div></div>
+      <div class="step" id="si4"><div class="step-num">4</div><div class="step-label">KK&PAK</div></div>
+      <div class="step" id="si5"><div class="step-num">5</div><div class="step-label">Kesehatan</div></div>
+      <div class="step" id="si6"><div class="step-num">6</div><div class="step-label">Kirim</div></div>
+    </div>
+
+    <!-- STEP 1: Informasi Perusahaan & Struktur (read-only dari profil) -->
+    <div id="step-1" class="section-step active-step">
+      <div class="form-card">
+        <h6 class="fw-bold mb-3"><i class="bi bi-building me-2 text-success"></i>A. INFORMASI DATA PERUSAHAAN & STRUKTUR</h6>
+        <div class="info-panel mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold mb-0" style="font-size:14px;">1. DATA PERUSAHAAN <span class="text-muted fw-normal" style="font-size:12px;">(Auto dari profil)</span></h6>
+            <a class="edit-link" onclick="goPage('profil')"><i class="bi bi-pencil-square me-1"></i>Edit profil</a>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="info-row"><span class="info-label">Nama Perusahaan</span><span class="info-value" id="infoNama">-</span></div>
+              <div class="info-row"><span class="info-label">Alamat</span><span class="info-value" id="infoAlamat">-</span></div>
+              <div class="info-row"><span class="info-label">Wilayah / Kota</span><span class="info-value" id="infoWilayah">-</span></div>
+              <div class="info-row"><span class="info-label">Bidang Usaha</span><span class="info-value" id="infoBidang">-</span></div>
+            </div>
+            <div class="col-md-6">
+              <div class="info-row"><span class="info-label">Email</span><span class="info-value" id="infoEmail">-</span></div>
+              <div class="info-row"><span class="info-label">No. Telepon</span><span class="info-value" id="infoTelp">-</span></div>
+              <div class="info-row"><span class="info-label">Jumlah TK Laki-laki</span><span class="info-value" id="infoTkLk">0</span></div>
+              <div class="info-row"><span class="info-label">Jumlah TK Perempuan</span><span class="info-value" id="infoTkPr">0</span></div>
+              <div class="info-row"><span class="info-label">Total Tenaga Kerja</span><span class="info-value fw-bold" id="infoTkTotal">0</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="info-panel mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold mb-0" style="font-size:14px;">2. STRUKTUR P2K3 <span class="text-muted fw-normal" style="font-size:12px;">(Auto dari data struktur)</span></h6>
+            <a class="edit-link" onclick="goPage('struktur')"><i class="bi bi-pencil-square me-1"></i>Edit struktur</a>
+          </div>
+          <div class="row mb-2">
+            <div class="col-md-6">
+              <div class="info-row"><span class="info-label">Ketua P2K3</span><span class="info-value" id="infoKetua">-</span></div>
+              <div class="info-row"><span class="info-label">Sekretaris P2K3</span><span class="info-value" id="infoSekretaris">-</span></div>
+              <div class="info-row"><span class="info-label">Jumlah Anggota</span><span class="info-value" id="infoJmlAnggota">0</span></div>
+            </div>
+          </div>
+          <div style="font-size:13px; font-weight:600; margin: 10px 0 5px;">Daftar Anggota</div>
+          <table class="table table-sm table-bordered" style="font-size:12.5px;">
+            <thead><tr><th>No</th><th>Nama</th><th>Jabatan</th></tr></thead>
+            <tbody id="infoAnggotaBody"><tr><td colspan="3" class="text-center text-muted">Belum ada data anggota</td></tr></tbody>
+          </table>
+        </div>
+        <div class="info-panel mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold mb-0" style="font-size:14px;">3. PERSONIL K3 <span class="text-muted fw-normal" style="font-size:12px;">(Auto dari data personil)</span></h6>
+            <a class="edit-link" onclick="goPage('personil')"><i class="bi bi-pencil-square me-1"></i>Edit personil</a>
+          </div>
+          <table class="table table-sm table-bordered" style="font-size:12.5px;">
+            <thead><tr><th>Nama</th><th>Jabatan</th><th>Sertifikasi K3</th></tr></thead>
+            <tbody id="infoPersonilBody"><tr><td colspan="3" class="text-center text-muted">Belum ada data personil K3</td></tr></tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-end mt-3">
+          <button class="btn-green btn" onclick="nextStep(2)">Lanjut <i class="bi bi-arrow-right ms-1"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: Data Pelaporan & Meeting P2K3 -->
+    <div id="step-2" class="section-step">
+      <div class="form-card">
+        <h6 class="fw-bold mb-3"><i class="bi bi-file-text me-2 text-success"></i>B. DATA PELAPORAN & MEETING P2K3</h6>
+        <div class="row g-3 mb-3">
+          <div class="col-md-5">
+            <label class="form-label">Nomor Laporan (auto-generate)</label>
+            <input type="text" class="form-control" id="lNoLaporan" readonly style="background:#f8fafc;">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label required">Periode</label>
+            <select class="form-select" id="lPeriode" onchange="generateNoLaporan()">
+              <option value="Semester I">Semester I (Jan–Jun)</option>
+              <option value="Semester II">Semester II (Jul–Des)</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label required">Tahun</label>
+            <select class="form-select" id="lTahun" onchange="generateNoLaporan()">
+            </select>
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label required">Jumlah Tenaga Kerja Periode Ini</label>
+          <div class="row g-2">
+            <div class="col-md-4">
+              <input type="number" class="form-control" id="lTkLk" placeholder="Laki-laki" min="0" value="0">
+            </div>
+            <div class="col-md-4">
+              <input type="number" class="form-control" id="lTkPr" placeholder="Perempuan" min="0" value="0">
+            </div>
+            <div class="col-md-4">
+              <input type="text" class="form-control" id="lTkTotal" readonly placeholder="Total" style="background:#f8fafc;">
+            </div>
+          </div>
+          <div class="form-text">Diisi sesuai kondisi terkini, bisa berbeda dengan data profil.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label required">Jumlah Peserta BPJS Ketenagakerjaan</label>
+          <input type="number" class="form-control" id="lBpjsTk" style="width:200px;" min="0" value="0">
+        </div>
+        <div class="mb-3">
+          <label class="form-label required">Jumlah Peserta BPJS Kesehatan</label>
+          <input type="number" class="form-control" id="lBpjsKes" style="width:200px;" min="0" value="0">
+        </div>
+
+        <div class="mt-4">
+          <label class="form-label required">Jumlah Pelaksanaan Meeting/Rapat P2K3</label>
+          <input type="number" class="form-control" id="lMeeting" style="width:150px;" min="0" value="0" onchange="generateMeetingForms()">
+        </div>
+        <div id="meetingFormsContainer" class="mt-3"></div>
+        
+        <div class="d-flex justify-content-between mt-4">
+          <button class="btn btn-outline-secondary" style="border-radius:var(--radius);" onclick="nextStep(1)"><i class="bi bi-arrow-left me-1"></i>Kembali</button>
+          <button class="btn-green btn" onclick="nextStep(3)">Lanjut <i class="bi bi-arrow-right ms-1"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: Program dan Kegiatan K3 -->
+    <div id="step-3" class="section-step">
+      <div class="form-card">
+        <h6 class="fw-bold mb-3"><i class="bi bi-clipboard-check me-2 text-success"></i>C. PROGRAM DAN KEGIATAN K3</h6>
+        <div id="programK3Container"></div>
+        <div class="mt-2">
+          <button class="btn btn-outline-success btn-sm" onclick="addProgramRow()"><i class="bi bi-plus me-1"></i>Tambah Program</button>
+        </div>
+        <div class="d-flex justify-content-between mt-4">
+          <button class="btn btn-outline-secondary" style="border-radius:var(--radius);" onclick="nextStep(2)"><i class="bi bi-arrow-left me-1"></i>Kembali</button>
+          <button class="btn-green btn" onclick="nextStep(4)">Lanjut <i class="bi bi-arrow-right ms-1"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: Kecelakaan Kerja & PAK -->
+    <div id="step-4" class="section-step">
+      <div class="form-card">
+        <h6 class="fw-bold mb-3"><i class="bi bi-exclamation-triangle me-2 text-warning"></i>D. KECELAKAAN KERJA & PAK</h6>
+        <div class="alert-info-soft mb-3">Rekapitulasi Kecelakaan Kerja dan Penyakit Akibat Kerja selama periode pelaporan.</div>
+        <div class="row g-3">
+          <div class="col-md-3"><label class="form-label">Kecelakaan Ringan</label><input type="number" class="form-control" id="lKkRingan" value="0" min="0"></div>
+          <div class="col-md-3"><label class="form-label">Kecelakaan Sedang</label><input type="number" class="form-control" id="lKkSedang" value="0" min="0"></div>
+          <div class="col-md-3"><label class="form-label">Kecelakaan Berat</label><input type="number" class="form-control" id="lKkBerat" value="0" min="0"></div>
+          <div class="col-md-3"><label class="form-label">Kecelakaan Fatal</label><input type="number" class="form-control" id="lKkFatal" value="0" min="0"></div>
+          <div class="col-md-4"><label class="form-label">Penyakit Akibat Kerja (PAK)</label><input type="number" class="form-control" id="lPAK" value="0" min="0"></div>
+          <div class="col-md-4">
+            <label class="form-label required">Frekuensi Inspeksi K3</label>
+            <input type="number" class="form-control" id="lInspeksi" value="0" min="0" placeholder="Jumlah inspeksi dilakukan">
+          </div>
+          <div class="col-12"><label class="form-label">Tindakan Perbaikan & Pencegahan</label><textarea class="form-control" id="lTindakan" rows="3" placeholder="Uraikan tindakan perbaikan dan pencegahan yang telah/sedang dilakukan..."></textarea></div>
+        </div>
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-outline-secondary" style="border-radius:var(--radius);" onclick="nextStep(3)"><i class="bi bi-arrow-left me-1"></i>Kembali</button>
+          <button class="btn-green btn" onclick="nextStep(5)">Lanjut <i class="bi bi-arrow-right ms-1"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5: Kesehatan Kerja -->
+    <div id="step-5" class="section-step">
+      <div class="form-card">
+        <h6 class="fw-bold mb-3"><i class="bi bi-heart-pulse me-2 text-success"></i>E. KESEHATAN KERJA</h6>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Medical Check Up (MCU) Berkala Terakhir</label>
+            <div class="d-flex gap-2 align-items-center">
+              <select class="form-select" id="lMcuBulan" style="width:auto;">
+                <option>Januari</option><option>Februari</option><option>Maret</option><option>April</option><option>Mei</option><option>Juni</option>
+                <option>Juli</option><option>Agustus</option><option>September</option><option>Oktober</option><option>November</option><option>Desember</option>
+              </select>
+              <select class="form-select" id="lMcuTahun" style="width:auto;"></select>
+              <span class="text-muted">(terakhir)</span>
+            </div>
+          </div>
+          <div class="col-md-6"><label class="form-label">Pemeriksaan Khusus</label><input type="text" class="form-control" id="lPemeriksaanKhusus" placeholder="Contoh: Audiometri, Spirometri, dll"></div>
+          <div class="col-12">
+            <label class="form-label">Hasil Umum Kesehatan Pekerja (MCU terakhir)</label>
+            <div class="row g-2">
+              <div class="col-md-4"><label class="form-label small">Jumlah Fit</label><input type="number" class="form-control" id="lHasilFit" value="0" min="0"></div>
+              <div class="col-md-4"><label class="form-label small">Temporary Unfit</label><input type="number" class="form-control" id="lHasilTemp" value="0" min="0"></div>
+              <div class="col-md-4"><label class="form-label small">Unfit</label><input type="number" class="form-control" id="lHasilUnfit" value="0" min="0"></div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-outline-secondary" style="border-radius:var(--radius);" onclick="nextStep(4)"><i class="bi bi-arrow-left me-1"></i>Kembali</button>
+          <button class="btn-green btn" onclick="nextStep(6)">Lanjut <i class="bi bi-arrow-right ms-1"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 6: Konfirmasi & Kirim -->
+    <div id="step-6" class="section-step">
+      <div class="form-card">
+        <h6 class="fw-bold mb-3"><i class="bi bi-send me-2 text-success"></i>Konfirmasi & Kirim Laporan</h6>
+        <div class="alert-warn-soft mb-3"><i class="bi bi-exclamation-triangle me-2"></i>Laporan yang sudah dikirim tidak dapat diubah. Pastikan semua data sudah benar.</div>
+        <div id="konfirmasiContainer" class="info-panel mb-3" style="max-height: 400px; overflow-y: auto;"></div>
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-outline-secondary" style="border-radius:var(--radius);" onclick="nextStep(5)"><i class="bi bi-arrow-left me-1"></i>Kembali</button>
+          <button class="btn-green btn" onclick="kirimLaporan()"><i class="bi bi-send me-2"></i>Kirim Laporan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIWAYAT LAPORAN -->
+  <div id="riwayat" class="page-section">
+    <div class="table-card">
+      <div class="section-header">
+        <div class="section-title"><i class="bi bi-clock-history me-2 text-success"></i>Riwayat Laporan P2K3</div>
+        <select class="form-select form-select-sm" style="width:140px;" id="filterRiwayatTahun" onchange="loadData()">
+          <option value="">Semua Tahun</option>
+        </select>
+      </div>
+      <table class="table mb-0">
+        <thead><tr><th>No. Laporan</th><th>Periode</th><th>Tgl Submit</th><th>Total KK</th><th>PAK</th><th>Meeting</th><th>Inspeksi</th><th>BPJS TK</th><th>Status</th><th>Catatan</th></tr></thead>
+        <tbody id="riwayatBody"><tr><td colspan="10" class="text-center text-muted py-3">Belum ada laporan</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CATATAN PENGAWAS -->
+  <div id="catatan" class="page-section">
+    <div class="section-header mb-3">
+      <div class="section-title"><i class="bi bi-chat-square-text me-2 text-success"></i>Catatan & Feedback Pengawas</div>
+    </div>
+    <div id="catatanList"><p class="text-muted">Belum ada catatan dari pengawas.</p></div>
+  </div>
+
+  <!-- PROFIL PERUSAHAAN -->
+  <div id="profil" class="page-section">
+    <div class="form-card">
+      <h6 class="fw-bold mb-3"><i class="bi bi-building me-2 text-success"></i>Profil Perusahaan</h6>
+      <div class="row g-3">
+        <div class="col-md-6"><label class="form-label">Nama Perusahaan</label><input type="text" class="form-control" id="profilNama"></div>
+        <div class="col-md-6"><label class="form-label">Bidang Usaha</label><input type="text" class="form-control" id="profilBidang"></div>
+        <div class="col-md-8"><label class="form-label">Alamat</label><input type="text" class="form-control" id="profilAlamat"></div>
+        <div class="col-md-4"><label class="form-label">Wilayah</label><input type="text" class="form-control" id="profilWilayah" readonly></div>
+        <div class="col-md-4"><label class="form-label">Email</label><input type="email" class="form-control" id="profilEmail"></div>
+        <div class="col-md-4"><label class="form-label">No. Telepon</label><input type="text" class="form-control" id="profilTelp"></div>
+        <div class="col-md-4"><label class="form-label">Jumlah TK Laki-laki</label><input type="number" class="form-control" id="profilTkLk" min="0" oninput="updateTotalTk()"></div>
+        <div class="col-md-4"><label class="form-label">Jumlah TK Perempuan</label><input type="number" class="form-control" id="profilTkPr" min="0" oninput="updateTotalTk()"></div>
+        <div class="col-md-4"><label class="form-label">Total Tenaga Kerja</label><input type="number" class="form-control" id="profilTkTotal" readonly></div>
+      </div>
+      <div class="d-flex justify-content-end mt-3">
+        <button class="btn-green btn" onclick="simpanProfil()"><i class="bi bi-save me-2"></i>Simpan Perubahan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STRUKTUR P2K3 -->
+  <div id="struktur" class="page-section">
+    <div class="form-card">
+      <h6 class="fw-bold mb-3"><i class="bi bi-diagram-3 me-2 text-success"></i>Struktur Organisasi P2K3</h6>
+      <div class="row g-3">
+        <div class="col-md-6"><label class="form-label required">Ketua P2K3</label><input type="text" class="form-control" id="strukturKetua" placeholder="Nama Ketua"></div>
+        <div class="col-md-6"><label class="form-label required">Sekretaris P2K3 (AK3 Umum)</label><input type="text" class="form-control" id="strukturSekretaris" placeholder="Nama Sekretaris"></div>
+        <div class="col-12">
+          <label class="form-label">Anggota P2K3</label>
+          <div id="anggota-list"></div>
+          <button class="btn btn-outline-secondary btn-sm mt-2" onclick="addAnggotaRow()"><i class="bi bi-plus me-1"></i>Tambah Anggota</button>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end mt-3">
+        <button class="btn-green btn" onclick="simpanStruktur()"><i class="bi bi-save me-2"></i>Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERSONIL K3 -->
+  <div id="personil" class="page-section">
+    <div class="form-card">
+      <div class="section-header">
+        <h6 class="fw-bold mb-0"><i class="bi bi-person-workspace me-2 text-success"></i>Personil K3 Bersertifikat</h6>
+        <button class="btn btn-sm btn-outline-success" onclick="addPersonilRow()"><i class="bi bi-plus me-1"></i>Tambah</button>
+      </div>
+      <div class="table-responsive mt-3">
+        <table class="table">
+          <thead><tr><th>Nama</th><th>Jabatan K3</th><th>Sertifikasi</th><th>Masa Berlaku</th><th></th></tr></thead>
+          <tbody id="personilBody"></tbody>
+        </table>
+      </div>
+      <div class="d-flex justify-content-end mt-3">
+        <button class="btn-green btn" onclick="simpanPersonil()"><i class="bi bi-save me-2"></i>Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOKUMEN -->
+  <div id="dokumen" class="page-section">
+    <div class="form-card">
+      <h6 class="fw-bold mb-3"><i class="bi bi-cloud-upload me-2 text-success"></i>Unggah Dokumen Penting</h6>
+      <div class="mb-4">
+        <label class="form-label required">SK Pengesahan P2K3</label>
+        <div class="upload-area" onclick="document.getElementById('skUpload').click()">
+          <i class="bi bi-file-earmark-pdf text-danger" style="font-size:24px;"></i>
+          <p class="mt-2 mb-0 fw-semibold" style="font-size:14px;">Unggah SK Pengesahan P2K3</p>
+          <small class="text-muted">PDF, max 5 MB</small>
+          <input type="file" id="skUpload" style="display:none;" onchange="showFileName(this, 'skDisplay')" accept=".pdf">
+        </div>
+        <div id="skDisplay" class="mt-2 small text-success fw-semibold"></div>
+      </div>
+      <div class="mb-4">
+        <label class="form-label required">Bukti BPJS Ketenagakerjaan</label>
+        <div class="upload-area" onclick="document.getElementById('bpjsTkUpload').click()">
+          <i class="bi bi-file-earmark-text text-primary" style="font-size:24px;"></i>
+          <p class="mt-2 mb-0 fw-semibold" style="font-size:14px;">Unggah Bukti BPJS TK</p>
+          <small class="text-muted">PDF / JPG, max 2 MB</small>
+          <input type="file" id="bpjsTkUpload" style="display:none;" onchange="showFileName(this, 'bpjsTkDisplay')" accept=".pdf,.jpg,.jpeg,.png">
+        </div>
+        <div id="bpjsTkDisplay" class="mt-2 small text-success fw-semibold"></div>
+      </div>
+      <div class="mb-4">
+        <label class="form-label required">Bukti BPJS Kesehatan</label>
+        <div class="upload-area" onclick="document.getElementById('bpjsKesUpload').click()">
+          <i class="bi bi-file-earmark-text text-success" style="font-size:24px;"></i>
+          <p class="mt-2 mb-0 fw-semibold" style="font-size:14px;">Unggah Bukti BPJS Kesehatan</p>
+          <small class="text-muted">PDF / JPG, max 2 MB</small>
+          <input type="file" id="bpjsKesUpload" style="display:none;" onchange="showFileName(this, 'bpjsKesDisplay')" accept=".pdf,.jpg,.jpeg,.png">
+        </div>
+        <div id="bpjsKesDisplay" class="mt-2 small text-success fw-semibold"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div id="toast"><i class="bi bi-check-circle me-2"></i><span id="toastMsg"></span></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const companyId = localStorage.getItem('p2k3_current_company');
+  if (!companyId || localStorage.getItem('p2k3_role') !== 'perusahaan') {
+    window.location.href = 'login.html';
+  }
+
+  const STORAGE_COMPANIES = 'p2k3_companies';
+  const STORAGE_LAPORAN = 'p2k3_laporan';
+  const STORAGE_CATATAN = 'p2k3_catatan';
+  const STORAGE_STRUKTUR = 'p2k3_struktur_';
+  const STORAGE_PERSONIL = 'p2k3_personil_';
+
+  function getCompanies() { return JSON.parse(localStorage.getItem(STORAGE_COMPANIES) || '[]'); }
+  function getLaporan() { return JSON.parse(localStorage.getItem(STORAGE_LAPORAN) || '[]'); }
+  function getCatatan() { return JSON.parse(localStorage.getItem(STORAGE_CATATAN) || '[]'); }
+  function saveCompanies(arr) { localStorage.setItem(STORAGE_COMPANIES, JSON.stringify(arr)); }
+  function saveLaporan(arr) { localStorage.setItem(STORAGE_LAPORAN, JSON.stringify(arr)); }
+  
+  function getStruktur() {
+    const data = localStorage.getItem(STORAGE_STRUKTUR + companyId);
+    return data ? JSON.parse(data) : { ketua: '', sekretaris: '', anggota: [] };
+  }
+  function saveStrukturData(data) { localStorage.setItem(STORAGE_STRUKTUR + companyId, JSON.stringify(data)); }
+  
+  function getPersonil() {
+    const data = localStorage.getItem(STORAGE_PERSONIL + companyId);
+    return data ? JSON.parse(data) : [];
+  }
+  function savePersonilData(data) { localStorage.setItem(STORAGE_PERSONIL + companyId, JSON.stringify(data)); }
+
+  const statusLabels = { draft:'Draft', submitted:'Dikirim', approved:'Disetujui', returned:'Dikembalikan', final:'Final (Arsip)' };
+  const statusClasses = { draft:'badge-draft', submitted:'badge-pending', approved:'badge-disetujui', returned:'badge-ditolak', final:'badge-final' };
+
+  let currentCompany = null;
+  let currentStep = 1;
+  let programCounter = 0;
+
+  // Utility: generate tahun options (5 tahun terakhir dan 1 tahun depan)
+  function generateTahunOptions(selectEl, selectedYear = null) {
+    const currentYear = new Date().getFullYear();
+    selectEl.innerHTML = '';
+    for (let y = currentYear + 1; y >= currentYear - 4; y--) {
+      const opt = document.createElement('option');
+      opt.value = y;
+      opt.textContent = y;
+      if (selectedYear && parseInt(selectedYear) === y) opt.selected = true;
+      if (!selectedYear && y === currentYear) opt.selected = true;
+      selectEl.appendChild(opt);
+    }
+  }
+
+  function loadData() {
+    const companies = getCompanies();
+    currentCompany = companies.find(c => c.id === companyId);
+    if (!currentCompany) { window.location.href = 'login.html'; return; }
+
+    document.getElementById('companyNameBadge').textContent = currentCompany.nama || 'Perusahaan';
+    
+    // Isi form profil
+    document.getElementById('profilNama').value = currentCompany.nama || '';
+    document.getElementById('profilBidang').value = currentCompany.bidang || '';
+    document.getElementById('profilAlamat').value = currentCompany.alamat || '';
+    document.getElementById('profilWilayah').value = currentCompany.wilayah || '';
+    document.getElementById('profilEmail').value = currentCompany.email || '';
+    document.getElementById('profilTelp').value = currentCompany.telp || '';
+    document.getElementById('profilTkLk').value = currentCompany.tkLk || 0;
+    document.getElementById('profilTkPr').value = currentCompany.tkPr || 0;
+    document.getElementById('profilTkTotal').value = (currentCompany.tkLk || 0) + (currentCompany.tkPr || 0);
+
+    const struktur = getStruktur();
+    document.getElementById('strukturKetua').value = struktur.ketua || '';
+    document.getElementById('strukturSekretaris').value = struktur.sekretaris || '';
+    renderAnggotaList(struktur.anggota || []);
+
+    const personil = getPersonil();
+    renderPersonilTable(personil);
+
+    updateInfoPanel();
+
+    const myLaporan = getLaporan().filter(l => l.companyId === companyId);
+    const myCatatan = getCatatan().filter(c => c.companyId === companyId);
+
+    // Dashboard stats
+    document.getElementById('dashTotalLaporan').textContent = myLaporan.length;
+    document.getElementById('dashCatatanCount').textContent = myCatatan.length;
+    document.getElementById('dashFinalCount').textContent = myLaporan.filter(l => l.status === 'final').length;
+
+    document.getElementById('notifDot').style.display = myCatatan.length > 0 ? 'block' : 'none';
+
+    if (myLaporan.length > 0) {
+      const last = myLaporan[myLaporan.length - 1];
+      document.getElementById('dashStatusTerakhir').textContent = statusLabels[last.status] || last.status;
+    } else {
+      document.getElementById('dashStatusTerakhir').textContent = '—';
+    }
+
+    // Dashboard recent laporan (5 terakhir)
+    const dashBody = document.getElementById('dashLaporanBody');
+    if (myLaporan.length === 0) {
+      dashBody.innerHTML = '<tr><td colspan="3" class="text-center text-muted py-3">Belum ada laporan</td></tr>';
+    } else {
+      dashBody.innerHTML = myLaporan.slice(-5).reverse().map(l =>
+        `<tr>
+          <td><code style="font-size:11px;">${l.noLaporan || '—'}</code></td>
+          <td>${l.periode} ${l.tahun || ''}</td>
+          <td>${l.tglSubmit || '—'}</td>
+          <td><span class="badge-status ${statusClasses[l.status] || 'badge-draft'}">${statusLabels[l.status] || l.status}</span></td>
+        </tr>`
+      ).join('');
+    }
+
+    // Dashboard catatan terbaru
+    const dashCatList = document.getElementById('dashCatatanList');
+    if (myCatatan.length === 0) {
+      dashCatList.innerHTML = '<p class="text-muted small">Belum ada catatan dari pengawas.</p>';
+    } else {
+      dashCatList.innerHTML = myCatatan.slice(-3).reverse().map(n =>
+        `<div class="catatan-item ${n.jenis === 'Peringatan' ? 'danger' : n.jenis === 'Perlu Tindak Lanjut' ? 'warning' : ''}">
+          <div style="font-size:11px;color:#94a3b8;font-weight:600;margin-bottom:4px;">${n.jenis} · ${n.tglKirim}</div>
+          <div style="font-size:13px;color:#1e293b;">${n.isi}</div>
+        </div>`
+      ).join('');
+    }
+
+    // Filter riwayat tahun
+    const filterTahun = document.getElementById('filterRiwayatTahun')?.value || '';
+    const tahunSet = new Set(myLaporan.map(l => l.tahun).filter(Boolean));
+    const filterSelect = document.getElementById('filterRiwayatTahun');
+    if (filterSelect) {
+      filterSelect.innerHTML = '<option value="">Semua Tahun</option>' + 
+        [...tahunSet].sort((a,b) => b - a).map(t => `<option value="${t}" ${filterTahun === t ? 'selected' : ''}>${t}</option>`).join('');
+    }
+    
+    const filteredLaporan = filterTahun ? myLaporan.filter(l => l.tahun == filterTahun) : myLaporan;
+
+    // Tabel riwayat
+    const riwBody = document.getElementById('riwayatBody');
+    if (filteredLaporan.length === 0) {
+      riwBody.innerHTML = '<tr><td colspan="10" class="text-center text-muted py-3">Belum ada laporan</td></tr>';
+    } else {
+      riwBody.innerHTML = [...filteredLaporan].reverse().map(l => {
+        const totalKK = (l.kkRingan || 0) + (l.kkSedang || 0) + (l.kkBerat || 0) + (l.kkFatal || 0);
+        return `<tr>
+          <td><code style="font-size:10.5px;">${l.noLaporan || '—'}</code></td>
+          <td>${l.periode} ${l.tahun || ''}</td>
+          <td>${l.tglSubmit || '—'}</td>
+          <td>${totalKK}</td>
+          <td>${l.pak || 0}</td>
+          <td>${l.meeting || 0}</td>
+          <td>${l.inspeksiK3 || 0}</td>
+          <td>${l.pesertaBpjsTk || 0}</td>
+          <td><span class="badge-status ${statusClasses[l.status] || 'badge-draft'}">${statusLabels[l.status] || l.status}</span></td>
+          <td style="font-size:11.5px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${l.catatanPengawas || ''}">${l.catatanPengawas ? `<i class="bi bi-chat-dots text-success me-1"></i>${l.catatanPengawas}` : '—'}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    // Catatan pengawas
+    const catList = document.getElementById('catatanList');
+    if (myCatatan.length === 0) {
+      catList.innerHTML = '<p class="text-muted">Belum ada catatan dari pengawas.</p>';
+    } else {
+      catList.innerHTML = [...myCatatan].reverse().map(n =>
+        `<div class="catatan-item ${n.jenis === 'Peringatan' ? 'danger' : n.jenis === 'Perlu Tindak Lanjut' ? 'warning' : ''}">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="badge-status ${n.jenis === 'Peringatan' ? 'badge-ditolak' : n.jenis === 'Perlu Tindak Lanjut' ? 'badge-pending' : 'badge-disetujui'}">${n.jenis}</span>
+            <small class="text-muted">${n.tglKirim}</small>
+          </div>
+          <div style="font-size:13.5px;color:#1e293b;">${n.isi}</div>
+        </div>`
+      ).join('');
+    }
+
+    // Badge notifikasi di sidebar
+    const navCat = document.getElementById('navCatatan');
+    const oldBadge = navCat.querySelector('.notif-badge');
+    if (oldBadge) oldBadge.remove();
+    if (myCatatan.length > 0) {
+      const badge = document.createElement('span');
+      badge.className = 'notif-badge';
+      badge.textContent = myCatatan.length;
+      navCat.appendChild(badge);
+    }
+
+    // Update filter tahun di laporan dan MCU
+    const currentYear = new Date().getFullYear();
+    generateTahunOptions(document.getElementById('lTahun'), currentYear);
+    generateTahunOptions(document.getElementById('lMcuTahun'), currentYear);
+  }
+
+  function updateTotalTk() {
+    const lk = parseInt(document.getElementById('profilTkLk').value) || 0;
+    const pr = parseInt(document.getElementById('profilTkPr').value) || 0;
+    document.getElementById('profilTkTotal').value = lk + pr;
+  }
+
+  function updateLaporanTkTotal() {
+    const lk = parseInt(document.getElementById('lTkLk').value) || 0;
+    const pr = parseInt(document.getElementById('lTkPr').value) || 0;
+    document.getElementById('lTkTotal').value = lk + pr;
+  }
+
+  function simpanProfil() {
+    const companies = getCompanies();
+    const idx = companies.findIndex(c => c.id === companyId);
+    if (idx >= 0) {
+      companies[idx].nama = document.getElementById('profilNama').value;
+      companies[idx].bidang = document.getElementById('profilBidang').value;
+      companies[idx].alamat = document.getElementById('profilAlamat').value;
+      companies[idx].email = document.getElementById('profilEmail').value;
+      companies[idx].telp = document.getElementById('profilTelp').value;
+      companies[idx].tkLk = parseInt(document.getElementById('profilTkLk').value) || 0;
+      companies[idx].tkPr = parseInt(document.getElementById('profilTkPr').value) || 0;
+      companies[idx].jumlahTk = (companies[idx].tkLk || 0) + (companies[idx].tkPr || 0);
+      saveCompanies(companies);
+      currentCompany = companies[idx];
+      updateInfoPanel();
+      showToast('Profil perusahaan berhasil disimpan!');
+    }
+  }
+
+  function renderAnggotaList(anggota) {
+    const container = document.getElementById('anggota-list');
+    if (!anggota || anggota.length === 0) {
+      container.innerHTML = '<p class="text-muted small">Belum ada anggota. Klik "Tambah Anggota".</p>';
+      return;
+    }
+    container.innerHTML = anggota.map((a, i) => `
+      <div class="row g-2 mb-2 align-items-end">
+        <div class="col-md-5"><input class="form-control form-control-sm" value="${a.nama || ''}" placeholder="Nama Anggota"></div>
+        <div class="col-md-5"><input class="form-control form-control-sm" value="${a.jabatan || ''}" placeholder="Jabatan di Perusahaan"></div>
+        <div class="col-md-2"><button class="btn btn-outline-danger btn-sm w-100" onclick="removeAnggota(${i})"><i class="bi bi-trash"></i></button></div>
+      </div>
+    `).join('');
+  }
+
+  function getAnggotaFromForm() {
+    const rows = document.querySelectorAll('#anggota-list .row');
+    const anggota = [];
+    rows.forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      if (inputs.length >= 2) {
+        const nama = inputs[0].value.trim();
+        const jabatan = inputs[1].value.trim();
+        if (nama || jabatan) anggota.push({ nama, jabatan });
+      }
+    });
+    return anggota;
+  }
+
+  function removeAnggota(index) {
+    const struktur = getStruktur();
+    struktur.anggota.splice(index, 1);
+    saveStrukturData(struktur);
+    renderAnggotaList(struktur.anggota);
+    updateInfoPanel();
+  }
+
+  function addAnggotaRow() {
+    const struktur = getStruktur();
+    struktur.anggota.push({ nama: '', jabatan: '' });
+    saveStrukturData(struktur);
+    renderAnggotaList(struktur.anggota);
+  }
+
+  function simpanStruktur() {
+    const struktur = {
+      ketua: document.getElementById('strukturKetua').value.trim(),
+      sekretaris: document.getElementById('strukturSekretaris').value.trim(),
+      anggota: getAnggotaFromForm()
+    };
+    saveStrukturData(struktur);
+    updateInfoPanel();
+    showToast('Struktur P2K3 berhasil disimpan!');
+  }
+
+  function renderPersonilTable(personil) {
+    const tbody = document.getElementById('personilBody');
+    if (!personil || personil.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">Belum ada data personil</td></tr>';
+      return;
+    }
+    tbody.innerHTML = personil.map((p, i) => `
+      <tr>
+        <td><input type="text" class="form-control form-control-sm" value="${p.nama || ''}" placeholder="Nama"></td>
+        <td><input type="text" class="form-control form-control-sm" value="${p.jabatan || ''}" placeholder="Jabatan K3"></td>
+        <td><input type="text" class="form-control form-control-sm" value="${p.sertifikasi || ''}" placeholder="Sertifikasi"></td>
+        <td><input type="date" class="form-control form-control-sm" value="${p.masaBerlaku || ''}"></td>
+        <td><button class="btn btn-sm btn-outline-danger" onclick="removePersonil(${i})"><i class="bi bi-trash"></i></button></td>
+      </tr>
+    `).join('');
+  }
+
+  function getPersonilFromForm() {
+    const rows = document.querySelectorAll('#personilBody tr');
+    const personil = [];
+    rows.forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      if (inputs.length >= 4) {
+        const nama = inputs[0].value.trim();
+        const jabatan = inputs[1].value.trim();
+        const sertifikasi = inputs[2].value.trim();
+        const masaBerlaku = inputs[3].value;
+        if (nama || jabatan || sertifikasi) {
+          personil.push({ nama, jabatan, sertifikasi, masaBerlaku });
+        }
+      }
+    });
+    return personil;
+  }
+
+  function removePersonil(index) {
+    const personil = getPersonil();
+    personil.splice(index, 1);
+    savePersonilData(personil);
+    renderPersonilTable(personil);
+    updateInfoPanel();
+  }
+
+  function addPersonilRow() {
+    const personil = getPersonil();
+    personil.push({ nama: '', jabatan: '', sertifikasi: '', masaBerlaku: '' });
+    savePersonilData(personil);
+    renderPersonilTable(personil);
+  }
+
+  function simpanPersonil() {
+    const personil = getPersonilFromForm();
+    savePersonilData(personil);
+    updateInfoPanel();
+    showToast('Data personil K3 berhasil disimpan!');
+  }
+
+  function updateInfoPanel() {
+    if (!currentCompany) return;
+    document.getElementById('infoNama').textContent = currentCompany.nama || '-';
+    document.getElementById('infoAlamat').textContent = currentCompany.alamat || '-';
+    document.getElementById('infoWilayah').textContent = currentCompany.wilayah || '-';
+    document.getElementById('infoBidang').textContent = currentCompany.bidang || '-';
+    document.getElementById('infoEmail').textContent = currentCompany.email || '-';
+    document.getElementById('infoTelp').textContent = currentCompany.telp || '-';
+    const tkLk = currentCompany.tkLk || 0;
+    const tkPr = currentCompany.tkPr || 0;
+    document.getElementById('infoTkLk').textContent = tkLk;
+    document.getElementById('infoTkPr').textContent = tkPr;
+    document.getElementById('infoTkTotal').textContent = tkLk + tkPr;
+
+    // Sync ke form laporan step 2
+    if (document.getElementById('lTkLk')) {
+      document.getElementById('lTkLk').value = tkLk;
+      document.getElementById('lTkPr').value = tkPr;
+      document.getElementById('lTkTotal').value = tkLk + tkPr;
+    }
+
+    const struktur = getStruktur();
+    document.getElementById('infoKetua').textContent = struktur.ketua || '-';
+    document.getElementById('infoSekretaris').textContent = struktur.sekretaris || '-';
+    const anggota = struktur.anggota || [];
+    document.getElementById('infoJmlAnggota').textContent = anggota.length;
+    const anggotaBody = document.getElementById('infoAnggotaBody');
+    if (anggota.length === 0) {
+      anggotaBody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">Belum ada data anggota</td></tr>';
+    } else {
+      anggotaBody.innerHTML = anggota.map((a, i) => `<tr><td>${i+1}</td><td>${a.nama || '-'}</td><td>${a.jabatan || '-'}</td></tr>`).join('');
+    }
+
+    const personil = getPersonil();
+    const personilBody = document.getElementById('infoPersonilBody');
+    if (personil.length === 0) {
+      personilBody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">Belum ada data personil K3</td></tr>';
+    } else {
+      personilBody.innerHTML = personil.map(p => `<tr><td>${p.nama || '-'}</td><td>${p.jabatan || '-'}</td><td>${p.sertifikasi || '-'}</td></tr>`).join('');
+    }
+
+    generateNoLaporan();
+  }
+
+  let cachedNoLaporan = null;
+  let cachedNoLaporanKey = null;
+
+  function generateNoLaporan() {
+    if (!currentCompany) return;
+    const periode = document.getElementById('lPeriode')?.value || 'Semester I';
+    const tahun = document.getElementById('lTahun')?.value || new Date().getFullYear();
+    const key = `${periode}-${tahun}`;
+    if (!cachedNoLaporan || cachedNoLaporanKey !== key) {
+      const random = Math.floor(Math.random() * 9000 + 1000);
+      cachedNoLaporan = `LAPOR-P2K3/${currentCompany.nama.replace(/[^a-zA-Z0-9]/g, '-').toUpperCase()}/${periode.replace(/\s+/g, '')}-${tahun}/${random}`;
+      cachedNoLaporanKey = key;
+    }
+    const inputNo = document.getElementById('lNoLaporan');
+    if (inputNo) inputNo.value = cachedNoLaporan;
+    return cachedNoLaporan;
+  }
+
+  function generateMeetingForms() {
+    const count = parseInt(document.getElementById('lMeeting').value) || 0;
+    const container = document.getElementById('meetingFormsContainer');
+    container.innerHTML = '';
+    for (let i = 1; i <= count; i++) {
+      const div = document.createElement('div');
+      div.className = 'meeting-item';
+      div.innerHTML = `
+        <h6 class="fw-bold mb-2" style="font-size:13px;"><i class="bi bi-calendar-event me-1"></i>Meeting ke-${i}</h6>
+        <div class="row g-2 mb-2">
+          <div class="col-md-4"><label class="form-label small">Tanggal Meeting</label><input type="date" class="form-control form-control-sm" id="meetingTanggal${i}"></div>
+        </div>
+        <div class="mb-2"><label class="form-label small">Pembahasan Meeting ke-${i}</label><textarea class="form-control form-control-sm" id="meetingPembahasan${i}" rows="2" placeholder="Topik yang dibahas..."></textarea></div>
+        <div><label class="form-label small">Hasil / Tindak Lanjut Meeting ke-${i}</label><textarea class="form-control form-control-sm" id="meetingHasil${i}" rows="2" placeholder="Kesimpulan dan tindak lanjut..."></textarea></div>
+      `;
+      container.appendChild(div);
+    }
+  }
+
+  function addProgramRow() {
+    programCounter++;
+    const container = document.getElementById('programK3Container');
+    const div = document.createElement('div');
+    div.className = 'program-item';
+    div.id = `prog-${programCounter}`;
+    div.innerHTML = `
+      <div class="d-flex justify-content-end mb-2">
+        <button class="btn btn-sm btn-outline-danger" onclick="this.closest('.program-item').remove()"><i class="bi bi-trash"></i></button>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-5"><label class="form-label">Nama Program</label><input type="text" class="form-control form-control-sm" placeholder="Contoh: Pelatihan K3" id="progNama${programCounter}"></div>
+        <div class="col-md-5"><label class="form-label">Nama Kegiatan</label><input type="text" class="form-control form-control-sm" placeholder="Contoh: Pelatihan APAR" id="progKegiatan${programCounter}"></div>
+        <div class="col-md-2"><label class="form-label">Tanggal</label><input type="date" class="form-control form-control-sm" id="progTanggal${programCounter}"></div>
+      </div>
+    `;
+    container.appendChild(div);
+  }
+
+  // Page navigation
+  const pageMap = { 
+    dashboard:'Dashboard Perusahaan', 'buat-laporan':'Buat Laporan', riwayat:'Riwayat Laporan', 
+    catatan:'Catatan Pengawas', profil:'Profil Perusahaan', struktur:'Struktur P2K3', 
+    personil:'Personil K3', dokumen:'Dokumen' 
+  };
+
+  function goPage(id) {
+    document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
+    const target = document.getElementById(id);
+    if (target) target.classList.add('active-page');
+    document.getElementById('pageTitle').textContent = pageMap[id] || id;
+    document.querySelectorAll('.nav-link').forEach(l => { l.classList.remove('active'); if (l.dataset.page === id) l.classList.add('active'); });
+    window.scrollTo(0, 0);
+    
+    if (id === 'buat-laporan') { updateInfoPanel(); initStepForm(); }
+    if (id === 'profil') { loadData(); }
+    if (id === 'struktur') { const s = getStruktur(); document.getElementById('strukturKetua').value = s.ketua || ''; document.getElementById('strukturSekretaris').value = s.sekretaris || ''; renderAnggotaList(s.anggota || []); }
+    if (id === 'personil') { renderPersonilTable(getPersonil()); }
+  }
+
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', e => { e.preventDefault(); goPage(link.dataset.page); });
+  });
+
+  function initStepForm() {
+    currentStep = 1;
+    programCounter = 0;
+    cachedNoLaporan = null; // reset nomor laporan agar di-generate baru
+    cachedNoLaporanKey = null;
+    showStep(1);
+    generateMeetingForms();
+    document.getElementById('programK3Container').innerHTML = '';
+    addProgramRow();
+    // Reset form fields
+    document.getElementById('lMeeting').value = 0;
+    document.getElementById('lBpjsTk').value = 0;
+    document.getElementById('lBpjsKes').value = 0;
+    document.getElementById('lKkRingan').value = 0;
+    document.getElementById('lKkSedang').value = 0;
+    document.getElementById('lKkBerat').value = 0;
+    document.getElementById('lKkFatal').value = 0;
+    document.getElementById('lPAK').value = 0;
+    document.getElementById('lInspeksi').value = 0;
+    document.getElementById('lTindakan').value = '';
+    document.getElementById('lPemeriksaanKhusus').value = '';
+    document.getElementById('lHasilFit').value = 0;
+    document.getElementById('lHasilTemp').value = 0;
+    document.getElementById('lHasilUnfit').value = 0;
+    updateInfoPanel();
+    generateNoLaporan();
+    // Set listeners for TK input
+    document.getElementById('lTkLk').oninput = updateLaporanTkTotal;
+    document.getElementById('lTkPr').oninput = updateLaporanTkTotal;
+  }
+
+  function showStep(step) {
+    document.querySelectorAll('.section-step').forEach(el => el.classList.remove('active-step'));
+    const target = document.getElementById(`step-${step}`);
+    if (target) target.classList.add('active-step');
+    for (let i = 1; i <= 6; i++) {
+      const el = document.getElementById(`si${i}`);
+      if (el) { el.classList.remove('active', 'done'); if (i < step) el.classList.add('done'); if (i === step) el.classList.add('active'); }
+    }
+    currentStep = step;
+    if (step === 6) generateKonfirmasi();
+    window.scrollTo(0, 0);
+  }
+
+  function generateKonfirmasi() {
+    const container = document.getElementById('konfirmasiContainer');
+    const noLaporan = document.getElementById('lNoLaporan').value;
+    const periode = document.getElementById('lPeriode').value;
+    const tahun = document.getElementById('lTahun').value;
+    const tkLk = document.getElementById('lTkLk').value;
+    const tkPr = document.getElementById('lTkPr').value;
+    const tkTotal = document.getElementById('lTkTotal').value;
+    const bpjsTk = document.getElementById('lBpjsTk').value;
+    const bpjsKes = document.getElementById('lBpjsKes').value;
+    const jmlMeeting = parseInt(document.getElementById('lMeeting').value) || 0;
+    
+    let meetingText = '';
+    for (let i = 1; i <= jmlMeeting; i++) {
+      const tgl = document.getElementById(`meetingTanggal${i}`)?.value || '-';
+      const pembahasan = document.getElementById(`meetingPembahasan${i}`)?.value || '-';
+      const hasil = document.getElementById(`meetingHasil${i}`)?.value || '-';
+      meetingText += `<div class="mt-2 p-2 bg-white rounded border"><strong>Meeting ke-${i}</strong> (${tgl})<br><span class="text-muted">Pembahasan:</span> ${pembahasan}<br><span class="text-muted">Hasil:</span> ${hasil}</div>`;
+    }
+    
+    const programItems = document.querySelectorAll('.program-item');
+    let programText = '';
+    programItems.forEach((item, idx) => {
+      const nama = item.querySelector('input[id^="progNama"]')?.value || '-';
+      const kegiatan = item.querySelector('input[id^="progKegiatan"]')?.value || '-';
+      const tanggal = item.querySelector('input[id^="progTanggal"]')?.value || '-';
+      programText += `<div class="mt-2 p-2 bg-white rounded border"><strong>Program ${idx+1}:</strong> ${nama}<br><span class="text-muted">Kegiatan:</span> ${kegiatan} | <span class="text-muted">Tanggal:</span> ${tanggal}</div>`;
+    });
+
+    container.innerHTML = `
+      <div class="info-row"><span class="info-label">Nomor Laporan</span><span class="info-value fw-bold" style="font-size:12px;">${noLaporan}</span></div>
+      <div class="info-row"><span class="info-label">Periode</span><span class="info-value">${periode} ${tahun}</span></div>
+      <div class="info-row"><span class="info-label">Tenaga Kerja</span><span class="info-value">L: ${tkLk} | P: ${tkPr} | Total: ${tkTotal}</span></div>
+      <div class="info-row"><span class="info-label">BPJS TK / Kesehatan</span><span class="info-value">${bpjsTk} / ${bpjsKes} peserta</span></div>
+      <div class="info-row"><span class="info-label">Jumlah Meeting</span><span class="info-value">${jmlMeeting} kali</span></div>
+      <div class="mt-3"><strong>Detail Meeting:</strong> ${meetingText || '<p class="text-muted small">Tidak ada meeting</p>'}</div>
+      <div class="mt-3"><strong>Program & Kegiatan K3:</strong> ${programText || '<p class="text-muted small">Tidak ada program</p>'}</div>
+      <div class="mt-3 info-row"><span class="info-label">Kecelakaan Kerja</span><span class="info-value">Ringan: ${document.getElementById('lKkRingan').value}, Sedang: ${document.getElementById('lKkSedang').value}, Berat: ${document.getElementById('lKkBerat').value}, Fatal: ${document.getElementById('lKkFatal').value}</span></div>
+      <div class="info-row"><span class="info-label">PAK</span><span class="info-value">${document.getElementById('lPAK').value} kasus</span></div>
+      <div class="info-row"><span class="info-label">Inspeksi K3</span><span class="info-value">${document.getElementById('lInspeksi').value} kali</span></div>
+      <div class="info-row"><span class="info-label">Tindakan Perbaikan</span><span class="info-value">${document.getElementById('lTindakan').value || '-'}</span></div>
+      <div class="info-row"><span class="info-label">MCU Terakhir</span><span class="info-value">${document.getElementById('lMcuBulan').value} ${document.getElementById('lMcuTahun').value}</span></div>
+      <div class="info-row"><span class="info-label">Pemeriksaan Khusus</span><span class="info-value">${document.getElementById('lPemeriksaanKhusus').value || '-'}</span></div>
+      <div class="info-row"><span class="info-label">Hasil MCU</span><span class="info-value">Fit: ${document.getElementById('lHasilFit').value}, Temp Unfit: ${document.getElementById('lHasilTemp').value}, Unfit: ${document.getElementById('lHasilUnfit').value}</span></div>
+    `;
+  }
+
+  function nextStep(s) {
+    // Validasi basic sebelum lanjut
+    if (s === 2 && currentStep === 1) {
+      // Step 1 hanya read-only, langsung lanjut
+    }
+    if (s === 3 && currentStep === 2) {
+      if (!document.getElementById('lPeriode').value || !document.getElementById('lTahun').value) {
+        showToast('Periode dan Tahun wajib diisi!');
+        return;
+      }
+    }
+    if (s === 5 && currentStep === 4) {
+      const inspeksi = parseInt(document.getElementById('lInspeksi').value) || 0;
+      if (inspeksi <= 0) {
+        showToast('Frekuensi Inspeksi K3 wajib diisi minimal 1!');
+        return;
+      }
+    }
+    showStep(s);
+  }
+
+  function kirimLaporan() {
+    const laporan = getLaporan();
+    const newId = 'l' + Date.now();
+    const today = new Date().toISOString().split('T')[0];
+    const jmlMeeting = parseInt(document.getElementById('lMeeting').value) || 0;
+    
+    // Kumpulkan data meeting
+    const meetingDetails = [];
+    for (let i = 1; i <= jmlMeeting; i++) {
+      meetingDetails.push({
+        tanggal: document.getElementById(`meetingTanggal${i}`)?.value || '',
+        pembahasan: document.getElementById(`meetingPembahasan${i}`)?.value || '',
+        hasil: document.getElementById(`meetingHasil${i}`)?.value || ''
+      });
+    }
+    
+    // Kumpulkan data program
+    const programItems = document.querySelectorAll('.program-item');
+    const programs = [];
+    programItems.forEach(item => {
+      const nama = item.querySelector('input[id^="progNama"]')?.value || '';
+      const kegiatan = item.querySelector('input[id^="progKegiatan"]')?.value || '';
+      const tanggal = item.querySelector('input[id^="progTanggal"]')?.value || '';
+      if (nama || kegiatan) {
+        programs.push({ nama, kegiatan, tanggal });
+      }
+    });
+
+    const newLaporan = {
+      id: newId,
+      companyId: companyId,
+      noLaporan: document.getElementById('lNoLaporan').value,
+      periode: document.getElementById('lPeriode').value,
+      tahun: document.getElementById('lTahun').value,
+      tglSubmit: today,
+      tkLk: parseInt(document.getElementById('lTkLk').value) || 0,
+      tkPr: parseInt(document.getElementById('lTkPr').value) || 0,
+      pesertaBpjsTk: parseInt(document.getElementById('lBpjsTk').value) || 0,
+      pesertaBpjsKes: parseInt(document.getElementById('lBpjsKes').value) || 0,
+      meeting: jmlMeeting,
+      meetingDetails: meetingDetails,
+      programs: programs,
+      kkRingan: parseInt(document.getElementById('lKkRingan').value) || 0,
+      kkSedang: parseInt(document.getElementById('lKkSedang').value) || 0,
+      kkBerat: parseInt(document.getElementById('lKkBerat').value) || 0,
+      kkFatal: parseInt(document.getElementById('lKkFatal').value) || 0,
+      pak: parseInt(document.getElementById('lPAK').value) || 0,
+      inspeksiK3: parseInt(document.getElementById('lInspeksi').value) || 0,
+      tindakan: document.getElementById('lTindakan').value,
+      mcuBulan: document.getElementById('lMcuBulan').value,
+      mcuTahun: document.getElementById('lMcuTahun').value,
+      pemeriksaanKhusus: document.getElementById('lPemeriksaanKhusus').value,
+      hasilFit: parseInt(document.getElementById('lHasilFit').value) || 0,
+      hasilTemp: parseInt(document.getElementById('lHasilTemp').value) || 0,
+      hasilUnfit: parseInt(document.getElementById('lHasilUnfit').value) || 0,
+      status: 'submitted',
+      tglApprove: null,
+      pengawasId: currentCompany?.pengawasId || 'pw001',
+      catatanPengawas: null,
+      tglFinal: null
+    };
+
+    laporan.push(newLaporan);
+    saveLaporan(laporan);
+    showToast('✅ Laporan berhasil dikirim! Menunggu verifikasi pengawas.');
+    goPage('riwayat');
+    loadData();
+  }
+
+  function showFileName(input, displayId) {
+    const el = document.getElementById(displayId);
+    if (el && input.files.length) {
+      el.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i>${input.files[0].name}`;
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 3500);
+  }
+
+  function doLogout() {
+    localStorage.removeItem('p2k3_role');
+    localStorage.removeItem('p2k3_current_company');
+    window.location.href = 'login.html';
+  }
+
+  // Expose functions to global scope
+  window.updateTotalTk = updateTotalTk;
+  window.updateLaporanTkTotal = updateLaporanTkTotal;
+  window.simpanProfil = simpanProfil;
+  window.simpanStruktur = simpanStruktur;
+  window.simpanPersonil = simpanPersonil;
+  window.addAnggotaRow = addAnggotaRow;
+  window.removeAnggota = removeAnggota;
+  window.addPersonilRow = addPersonilRow;
+  window.removePersonil = removePersonil;
+  window.generateNoLaporan = generateNoLaporan;
+  window.generateMeetingForms = generateMeetingForms;
+  window.addProgramRow = addProgramRow;
+  window.nextStep = nextStep;
+  window.kirimLaporan = kirimLaporan;
+  window.showFileName = showFileName;
+
+  // Initialize
+  loadData();
+</script>
+</body>
+</html>

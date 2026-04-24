@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengawas · Lapor P2K3</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar d-flex flex-column">
+  <div class="brand">
+    <div class="brand-icon-box"><i class="bi bi-shield-check" style="color:white;"></i></div>
+    <span>Lapor P2K3</span>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">UTAMA</div>
+    <a href="#" class="nav-link active" data-page="dashboard"><i class="bi bi-house-door"></i> Dashboard</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">PERUSAHAAN BINAAN</div>
+    <a href="#" class="nav-link" data-page="daftar-perusahaan"><i class="bi bi-building"></i> Daftar Perusahaan</a>
+    <a href="#" class="nav-link" data-page="pendaftaran-baru"><i class="bi bi-inbox-fill"></i> Pendaftaran Baru</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">VERIFIKASI LAPORAN</div>
+    <a href="#" class="nav-link" data-page="menunggu" id="navMenunggu"><i class="bi bi-inbox"></i> Menunggu Verifikasi</a>
+    <a href="#" class="nav-link" data-page="riwayat-verif"><i class="bi bi-check2-circle"></i> Riwayat Verifikasi</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">KOMUNIKASI</div>
+    <a href="#" class="nav-link" data-page="feedback"><i class="bi bi-chat-dots"></i> Feedback & Catatan</a>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<div class="navbar-custom">
+  <div class="page-title" id="pageTitle">Dashboard Pengawas</div>
+  <div class="d-flex align-items-center gap-2">
+    <button class="notif-btn" onclick="goPage('menunggu')">
+      <i class="bi bi-bell" style="font-size:16px;color:#64748b;"></i>
+      <span class="notif-dot" id="notifDot" style="display:none;"></span>
+    </button>
+    <div class="user-badge">
+      <i class="bi bi-person-badge" style="color:#0f9d58;"></i>
+      <span style="font-weight:600;">Pengawas K3</span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()"><i class="bi bi-box-arrow-right"></i> Keluar</button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="page-section active-page">
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div><div class="stat-label">Perusahaan Binaan</div><div class="stat-value" id="dashJmlPerusahaan">0</div><div class="stat-sub">Terverifikasi</div></div>
+            <div class="stat-icon icon-green"><i class="bi bi-building"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div><div class="stat-label">Menunggu Verifikasi</div><div class="stat-value" id="dashMenunggu">0</div><div class="stat-sub">Laporan masuk</div></div>
+            <div class="stat-icon icon-yellow"><i class="bi bi-hourglass-split"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div><div class="stat-label">Pendaftaran Baru</div><div class="stat-value" id="dashPendaftaran">0</div><div class="stat-sub">Perlu diverifikasi</div></div>
+            <div class="stat-icon icon-blue"><i class="bi bi-building-add"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div><div class="stat-label">Disetujui Bulan Ini</div><div class="stat-value" id="dashDisetujui">0</div><div class="stat-sub">Laporan</div></div>
+            <div class="stat-icon icon-green"><i class="bi bi-check-circle"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-7">
+        <div class="table-card">
+          <div class="section-header">
+            <div class="section-title"><i class="bi bi-inbox me-2 text-warning"></i>Laporan Menunggu Verifikasi</div>
+            <a href="#" class="text-success small fw-semibold" onclick="goPage('menunggu');return false;">Lihat semua →</a>
+          </div>
+          <div id="dashMenungguList"><p class="text-muted small py-2">Tidak ada laporan yang menunggu.</p></div>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="table-card h-100">
+          <div class="section-title mb-3"><i class="bi bi-building-add me-2 text-primary"></i>Pendaftaran Perusahaan Baru</div>
+          <div id="dashPendaftaranList"><p class="text-muted small">Tidak ada pendaftaran baru.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAFTAR PERUSAHAAN -->
+  <div id="daftar-perusahaan" class="page-section">
+    <div class="table-card">
+      <div class="section-header">
+        <div class="section-title"><i class="bi bi-building me-2 text-success"></i>Perusahaan Binaan Terverifikasi</div>
+      </div>
+      <table class="table mb-0">
+        <thead><tr><th>Nama Perusahaan</th><th>Wilayah</th><th>Status</th></tr></thead>
+        <tbody id="daftarPerusahaanBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PENDAFTARAN BARU -->
+  <div id="pendaftaran-baru" class="page-section">
+    <div class="alert-warn-soft mb-3">
+      <i class="bi bi-exclamation-triangle me-2"></i>Perusahaan berikut dikirim oleh admin untuk diverifikasi. Tinjau data perusahaan dan tentukan apakah data sudah sesuai.
+    </div>
+    <div id="pendaftaranBaruList"><p class="text-muted">Tidak ada pendaftaran baru yang perlu diverifikasi.</p></div>
+  </div>
+
+  <!-- MENUNGGU VERIFIKASI -->
+  <div id="menunggu" class="page-section">
+    <div id="menungguList"><p class="text-muted">Tidak ada laporan yang menunggu verifikasi.</p></div>
+  </div>
+
+  <!-- RIWAYAT VERIFIKASI -->
+  <div id="riwayat-verif" class="page-section">
+    <div class="table-card">
+      <div class="section-header">
+        <div class="section-title"><i class="bi bi-check2-circle me-2 text-success"></i>Riwayat Verifikasi Laporan</div>
+      </div>
+      <table class="table mb-0">
+        <thead><tr><th>Perusahaan</th><th>Periode</th><th>Tgl Submit</th><th>Keputusan</th><th>Tgl Keputusan</th></tr></thead>
+        <tbody id="riwayatVerifBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FEEDBACK & CATATAN -->
+  <div id="feedback" class="page-section">
+    <div class="form-card mb-3">
+      <h6 class="fw-bold mb-3"><i class="bi bi-chat-dots me-2 text-success"></i>Tambah Catatan / Feedback untuk Perusahaan</h6>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Pilih Perusahaan</label>
+          <select class="form-select" id="feedCompany"></select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Laporan Terkait</label>
+          <select class="form-select" id="feedLaporan"><option value="">— Umum / Tidak terkait laporan —</option></select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Jenis Catatan</label>
+          <select class="form-select" id="feedJenis">
+            <option>Perlu Tindak Lanjut</option>
+            <option>Informasi</option>
+            <option>Peringatan</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Isi Catatan</label>
+          <textarea class="form-control" id="feedIsi" rows="3" placeholder="Tuliskan catatan atau feedback..."></textarea>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end mt-3">
+        <button class="btn-green btn" onclick="kirimCatatan()"><i class="bi bi-send me-2"></i>Kirim Catatan</button>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="section-title mb-3"><i class="bi bi-list-check me-2 text-success"></i>Riwayat Catatan Dikirim</div>
+      <table class="table mb-0">
+        <thead><tr><th>Perusahaan</th><th>Catatan</th><th>Tgl Kirim</th><th>Jenis</th></tr></thead>
+        <tbody id="feedRiwayatBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL VERIFIKASI LAPORAN -->
+<div class="modal-overlay" id="verifModal">
+  <div class="modal-box">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="fw-bold mb-0">Tinjau Laporan</h6>
+      <button onclick="closeModal('verifModal')" style="background:none;border:none;font-size:18px;cursor:pointer;color:#64748b;">&times;</button>
+    </div>
+    <table class="table table-sm mb-3">
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Perusahaan</td><td id="mPerusahaan" style="font-size:13px;font-weight:600;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Periode</td><td id="mPeriode" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Tgl Submit</td><td id="mTglSubmit" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Total Kecelakaan</td><td id="mKK" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">PAK</td><td id="mPAK" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Meeting P2K3</td><td id="mRapat" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Inspeksi K3</td><td id="mInspeksi" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">BPJS TK</td><td id="mBpjsTk" style="font-size:13px;"></td></tr>
+    </table>
+    <input type="hidden" id="mLaporanId">
+    <div class="mb-3">
+      <label class="form-label">Catatan Verifikasi (akan dilihat perusahaan)</label>
+      <textarea class="form-control" id="mCatatan" rows="2" placeholder="Tambahkan catatan..."></textarea>
+    </div>
+    <div class="d-flex gap-2 justify-content-end">
+      <button class="btn btn-outline-danger" style="border-radius:6px;" onclick="kembalikanLaporan()"><i class="bi bi-arrow-counterclockwise me-1"></i>Kembalikan</button>
+      <button class="btn-green btn" onclick="setujuiLaporan()"><i class="bi bi-check-lg me-1"></i>Setujui Laporan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TINJAU PENDAFTARAN -->
+<div class="modal-overlay" id="pendaftaranModal">
+  <div class="modal-box">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="fw-bold mb-0"><i class="bi bi-building me-2 text-success"></i>Verifikasi Pendaftaran Perusahaan</h6>
+      <button onclick="closeModal('pendaftaranModal')" style="background:none;border:none;font-size:18px;cursor:pointer;color:#64748b;">&times;</button>
+    </div>
+    <div class="alert-info-soft mb-3">
+      <i class="bi bi-info-circle me-2"></i>Data perusahaan ini dikirim oleh admin untuk verifikasi. Pastikan semua data sudah sesuai.
+    </div>
+    <table class="table table-sm mb-3">
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Nama</td><td id="pModalNama" style="font-size:13px;font-weight:600;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Alamat</td><td id="pModalAlamat" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Email</td><td id="pModalEmail" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Wilayah</td><td id="pModalWilayah" style="font-size:13px;"></td></tr>
+      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Tgl Daftar</td><td id="pModalTgl" style="font-size:13px;"></td></tr>
+    </table>
+    <input type="hidden" id="pModalId">
+
+    <div class="mb-3">
+      <label class="form-label">Keputusan Verifikasi</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div id="optSetujui" onclick="setPendaftaranOpt('setujui')" style="border:1.5px solid #e2e8f0;border-radius:6px;padding:10px;text-align:center;cursor:pointer;font-size:12.5px;font-weight:600;color:#64748b;transition:all 0.2s;">
+          <i class="bi bi-check-circle" style="display:block;font-size:20px;margin-bottom:4px;"></i>Setujui & Lanjutkan<br><span style="font-size:11px;font-weight:400;">Data sudah sesuai</span>
+        </div>
+        <div id="optRekomen" onclick="setPendaftaranOpt('rekomen')" style="border:1.5px solid #e2e8f0;border-radius:6px;padding:10px;text-align:center;cursor:pointer;font-size:12.5px;font-weight:600;color:#64748b;transition:all 0.2s;">
+          <i class="bi bi-person-gear" style="display:block;font-size:20px;margin-bottom:4px;"></i>Rekomendasikan<br><span style="font-size:11px;font-weight:400;">Pengawas Lain</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Catatan Verifikasi</label>
+      <textarea class="form-control" id="pModalCatatan" rows="2" placeholder="Keterangan tambahan..."></textarea>
+    </div>
+
+    <div id="pRekomenSection" style="display:none;" class="mb-3">
+      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 12px;font-size:12.5px;color:#92400e;margin-bottom:8px;">
+        <i class="bi bi-exclamation-triangle me-1"></i> Pilih pengawas lain yang lebih sesuai untuk menangani perusahaan ini. Rekomendasi akan dikirim kembali ke admin.
+      </div>
+      <label class="form-label">Rekomendasikan Kepada</label>
+      <select class="form-select" id="pRekomenPengawas"></select>
+      <div class="mt-2">
+        <label class="form-label">Alasan Rekomendasi</label>
+        <textarea class="form-control" id="pRekomenAlasan" rows="2" placeholder="Jelaskan mengapa pengawas ini lebih sesuai..."></textarea>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 justify-content-end">
+      <button class="btn btn-outline-secondary" style="border-radius:6px;" onclick="closeModal('pendaftaranModal')">Batal</button>
+      <button class="btn-green btn" id="btnPendaftaranSubmit" onclick="submitPendaftaran()" disabled style="opacity:0.5;">
+        <i class="bi bi-send me-1"></i><span id="btnPendaftaranLabel">Pilih Keputusan</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"><i class="bi bi-check-circle me-2"></i><span id="toastMsg"></span></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  if (localStorage.getItem('p2k3_role') !== 'pengawas') window.location.href = 'login.html';
+
+  const pengawasId = localStorage.getItem('p2k3_current_pengawas') || 'pw001';
+  
+  function getPengawasList() { return JSON.parse(localStorage.getItem('p2k3_pengawas_list') || '[]'); }
+  function getCompanies() { return JSON.parse(localStorage.getItem('p2k3_companies') || '[]'); }
+  function getLaporan() { return JSON.parse(localStorage.getItem('p2k3_laporan') || '[]'); }
+  function getCatatan() { return JSON.parse(localStorage.getItem('p2k3_catatan') || '[]'); }
+  function saveCompanies(arr) { localStorage.setItem('p2k3_companies', JSON.stringify(arr)); }
+  function saveLaporan(arr) { localStorage.setItem('p2k3_laporan', JSON.stringify(arr)); }
+  function saveCatatan(arr) { localStorage.setItem('p2k3_catatan', JSON.stringify(arr)); }
+
+  const statusLabels = { draft:'Draft', submitted:'Dikirim', approved:'Disetujui', returned:'Dikembalikan', final:'Final' };
+  const statusClasses = { submitted:'badge-pending', approved:'badge-disetujui', returned:'badge-ditolak', final:'badge-final', draft:'badge-draft' };
+
+  function loadData() {
+    const companies = getCompanies();
+    const laporan = getLaporan();
+    const catatan = getCatatan();
+
+    const myCompanies = companies.filter(c => c.pengawasId === pengawasId && c.status === 'verified');
+    const pendingLaporan = laporan.filter(l => l.pengawasId === pengawasId && l.status === 'submitted');
+    const pendingReg = companies.filter(c => c.status === 'pending_pengawas' && c.notifPengawas === pengawasId);
+    const approvedLaporan = laporan.filter(l => l.pengawasId === pengawasId && (l.status === 'approved' || l.status === 'final'));
+
+    document.getElementById('dashJmlPerusahaan').textContent = myCompanies.length;
+    document.getElementById('dashMenunggu').textContent = pendingLaporan.length;
+    document.getElementById('dashPendaftaran').textContent = pendingReg.length;
+    document.getElementById('dashDisetujui').textContent = approvedLaporan.length;
+
+    document.getElementById('notifDot').style.display = (pendingLaporan.length > 0 || pendingReg.length > 0) ? 'block' : 'none';
+
+    const navM = document.getElementById('navMenunggu');
+    const existing = navM.querySelector('.notif-badge');
+    if (existing) existing.remove();
+    if (pendingLaporan.length > 0) {
+      const b = document.createElement('span');
+      b.className = 'notif-badge';
+      b.textContent = pendingLaporan.length;
+      navM.appendChild(b);
+    }
+
+    const dashML = document.getElementById('dashMenungguList');
+    if (pendingLaporan.length === 0) {
+      dashML.innerHTML = '<p class="text-muted small py-2">Tidak ada laporan yang menunggu.</p>';
+    } else {
+      dashML.innerHTML = pendingLaporan.slice(0,3).map(l => {
+        const c = companies.find(x => x.id === l.companyId);
+        return `<div class="laporan-item normal">
+          <div class="d-flex justify-content-between align-items-start">
+            <div><div style="font-size:13.5px;font-weight:700;">${c?.nama || '—'}</div><div style="font-size:12px;color:#64748b;">${l.periode} ${l.tahun || ''} · Submit: ${l.tglSubmit}</div></div>
+            <button class="btn btn-sm btn-outline-success" style="font-size:12px;" onclick="openVerifModal('${l.id}')"><i class="bi bi-search me-1"></i>Tinjau</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    const dashPL = document.getElementById('dashPendaftaranList');
+    if (pendingReg.length === 0) {
+      dashPL.innerHTML = '<p class="text-muted small">Tidak ada pendaftaran baru.</p>';
+    } else {
+      dashPL.innerHTML = pendingReg.slice(0,3).map(c =>
+        `<div style="padding:10px 0;border-bottom:1px solid #f1f5f9;">
+          <div style="font-size:13.5px;font-weight:700;">${c.nama}</div>
+          <div style="font-size:12px;color:#64748b;">${c.wilayah} · ${c.tglDaftar}</div>
+          <button class="btn btn-sm btn-outline-primary mt-1" style="font-size:11.5px;" onclick="openPendaftaranModal('${c.id}')"><i class="bi bi-eye me-1"></i>Verifikasi</button>
+        </div>`
+      ).join('');
+    }
+
+    document.getElementById('daftarPerusahaanBody').innerHTML = myCompanies.length === 0
+      ? '<tr><td colspan="3" class="text-center text-muted py-3">Belum ada perusahaan binaan</td></tr>'
+      : myCompanies.map(c =>
+          `<tr><td>${c.nama}</td><td>${c.wilayah}</td><td><span class="badge-status badge-disetujui">Aktif</span></td></tr>`
+        ).join('');
+
+    const pbl = document.getElementById('pendaftaranBaruList');
+    if (pendingReg.length === 0) {
+      pbl.innerHTML = '<p class="text-muted">Tidak ada pendaftaran baru yang perlu diverifikasi.</p>';
+    } else {
+      pbl.innerHTML = pendingReg.map(c =>
+        `<div class="laporan-item normal">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div style="font-size:14px;font-weight:700;">${c.nama}</div>
+              <div style="font-size:12.5px;color:#64748b;">${c.wilayah} · ${c.alamat} · ${c.tglDaftar}</div>
+              <div style="font-size:12px;color:#94a3b8;">${c.email || '—'}</div>
+            </div>
+            <button class="btn btn-sm btn-outline-success" onclick="openPendaftaranModal('${c.id}')"><i class="bi bi-eye me-1"></i>Verifikasi</button>
+          </div>
+        </div>`
+      ).join('');
+    }
+
+    const ml = document.getElementById('menungguList');
+    if (pendingLaporan.length === 0) {
+      ml.innerHTML = '<p class="text-muted">Tidak ada laporan yang menunggu verifikasi.</p>';
+    } else {
+      ml.innerHTML = pendingLaporan.map(l => {
+        const c = companies.find(x => x.id === l.companyId);
+        const totalKK = l.kkRingan + l.kkSedang + l.kkBerat + l.kkFatal || l.kecelakaanKerja || 0;
+        return `<div class="laporan-item urgent">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <div style="font-size:14px;font-weight:700;">${c?.nama || '—'}</div>
+              <div style="font-size:12.5px;color:#64748b;">${l.periode} ${l.tahun || ''} · Submit: ${l.tglSubmit}</div>
+              <div style="font-size:12px;color:#94a3b8;">Kecelakaan: ${totalKK} | PAK: ${l.pak} | Rapat: ${l.meeting || l.rapatP2K3 || 0} | Inspeksi: ${l.inspeksiK3 || 0}</div>
+            </div>
+            <button class="btn btn-sm btn-outline-success" onclick="openVerifModal('${l.id}')"><i class="bi bi-search me-1"></i>Tinjau Laporan</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    const rv = getLaporan().filter(l => l.pengawasId === pengawasId && l.status !== 'submitted' && l.status !== 'draft');
+    document.getElementById('riwayatVerifBody').innerHTML = rv.length === 0
+      ? '<tr><td colspan="5" class="text-center text-muted py-3">Belum ada riwayat verifikasi</td></tr>'
+      : [...rv].reverse().map(l => {
+          const c = companies.find(x => x.id === l.companyId);
+          const dec = l.status === 'approved' || l.status === 'final' ? '<span class="badge-status badge-disetujui">Disetujui</span>' : '<span class="badge-status badge-ditolak">Dikembalikan</span>';
+          return `<tr><td>${c?.nama || '—'}</td><td>${l.periode} ${l.tahun || ''}</td><td>${l.tglSubmit}</td><td>${dec}</td><td>${l.tglApprove || '—'}</td></tr>`;
+        }).join('');
+
+    const feedComp = document.getElementById('feedCompany');
+    const allVerifCompanies = companies.filter(c => c.pengawasId === pengawasId && c.status === 'verified');
+    feedComp.innerHTML = allVerifCompanies.length === 0
+      ? '<option value="">— Tidak ada perusahaan binaan —</option>'
+      : allVerifCompanies.map(c => `<option value="${c.id}">${c.nama}</option>`).join('');
+    feedComp.onchange = updateFeedLaporan;
+    if (allVerifCompanies.length > 0) updateFeedLaporan();
+
+    const myCatatan = catatan.filter(n => n.pengawasId === pengawasId);
+    document.getElementById('feedRiwayatBody').innerHTML = myCatatan.length === 0
+      ? '<tr><td colspan="4" class="text-center text-muted py-3">Belum ada catatan dikirim</td></tr>'
+      : [...myCatatan].reverse().map(n => {
+          const c = companies.find(x => x.id === n.companyId);
+          return `<tr>
+            <td>${c?.nama || '—'}</td>
+            <td style="max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n.isi}</td>
+            <td>${n.tglKirim}</td>
+            <td><span class="badge-status ${n.jenis === 'Peringatan' ? 'badge-ditolak' : n.jenis === 'Perlu Tindak Lanjut' ? 'badge-pending' : 'badge-disetujui'}">${n.jenis}</span></td>
+          </tr>`;
+        }).join('');
+  }
+
+  function updateFeedLaporan() {
+    const cId = document.getElementById('feedCompany').value;
+    const laporan = getLaporan().filter(l => l.companyId === cId);
+    const sel = document.getElementById('feedLaporan');
+    sel.innerHTML = '<option value="">— Umum —</option>' + laporan.map(l => `<option value="${l.id}">${l.periode} ${l.tahun || ''}</option>`).join('');
+  }
+
+  function openVerifModal(laporanId) {
+    const laporan = getLaporan();
+    const l = laporan.find(x => x.id === laporanId);
+    if (!l) return;
+    const c = getCompanies().find(x => x.id === l.companyId);
+    const totalKK = l.kkRingan + l.kkSedang + l.kkBerat + l.kkFatal || l.kecelakaanKerja || 0;
+    document.getElementById('mPerusahaan').textContent = c?.nama || '—';
+    document.getElementById('mPeriode').textContent = `${l.periode} ${l.tahun || ''}`;
+    document.getElementById('mTglSubmit').textContent = l.tglSubmit;
+    document.getElementById('mKK').textContent = totalKK + ' kasus';
+    document.getElementById('mPAK').textContent = l.pak + ' kasus';
+    document.getElementById('mRapat').textContent = (l.meeting || l.rapatP2K3 || 0) + ' kali';
+    document.getElementById('mInspeksi').textContent = (l.inspeksiK3 || 0) + ' kali';
+    document.getElementById('mBpjsTk').textContent = (l.pesertaBpjsTk || 0) + ' peserta';
+    document.getElementById('mLaporanId').value = laporanId;
+    document.getElementById('mCatatan').value = '';
+    document.getElementById('verifModal').classList.add('show');
+  }
+
+  function setujuiLaporan() {
+    const laporanId = document.getElementById('mLaporanId').value;
+    const catatan = document.getElementById('mCatatan').value.trim();
+    const today = new Date().toISOString().split('T')[0];
+    const laporan = getLaporan();
+    const idx = laporan.findIndex(l => l.id === laporanId);
+    if (idx >= 0) {
+      laporan[idx].status = 'approved';
+      laporan[idx].tglApprove = today;
+      laporan[idx].catatanPengawas = catatan || 'Laporan disetujui.';
+      saveLaporan(laporan);
+    }
+    closeModal('verifModal');
+    showToast('Laporan disetujui dan diteruskan ke admin!');
+    loadData();
+  }
+
+  function kembalikanLaporan() {
+    const laporanId = document.getElementById('mLaporanId').value;
+    const catatan = document.getElementById('mCatatan').value.trim();
+    const today = new Date().toISOString().split('T')[0];
+    const laporan = getLaporan();
+    const idx = laporan.findIndex(l => l.id === laporanId);
+    if (idx >= 0) {
+      laporan[idx].status = 'returned';
+      laporan[idx].tglApprove = today;
+      laporan[idx].catatanPengawas = catatan || 'Laporan dikembalikan untuk diperbaiki.';
+      saveLaporan(laporan);
+    }
+    closeModal('verifModal');
+    showToast('Laporan dikembalikan ke perusahaan.');
+    loadData();
+  }
+
+  function openPendaftaranModal(companyId) {
+    const c = getCompanies().find(x => x.id === companyId);
+    if (!c) return;
+    document.getElementById('pModalNama').textContent = c.nama;
+    document.getElementById('pModalAlamat').textContent = c.alamat;
+    document.getElementById('pModalEmail').textContent = c.email || '—';
+    document.getElementById('pModalWilayah').textContent = c.wilayah || '—';
+    document.getElementById('pModalTgl').textContent = c.tglDaftar;
+    document.getElementById('pModalId').value = companyId;
+    document.getElementById('pModalCatatan').value = '';
+    
+    const pengawasList = getPengawasList().filter(p => p.id !== pengawasId);
+    const selectPengawas = document.getElementById('pRekomenPengawas');
+    selectPengawas.innerHTML = pengawasList.map(p => 
+      `<option value="${p.id}">${p.nama}${p.nip ? ' - NIP: ' + p.nip : ''}</option>`
+    ).join('');
+    
+    pendaftaranOpt = null;
+    document.getElementById('optSetujui').style.cssText = 'border:1.5px solid #e2e8f0;border-radius:6px;padding:10px;text-align:center;cursor:pointer;font-size:12.5px;font-weight:600;color:#64748b;transition:all 0.2s;';
+    document.getElementById('optRekomen').style.cssText = 'border:1.5px solid #e2e8f0;border-radius:6px;padding:10px;text-align:center;cursor:pointer;font-size:12.5px;font-weight:600;color:#64748b;transition:all 0.2s;';
+    document.getElementById('pRekomenSection').style.display = 'none';
+    document.getElementById('pRekomenAlasan').value = '';
+    const btn = document.getElementById('btnPendaftaranSubmit');
+    btn.disabled = true; btn.style.opacity = '0.5';
+    document.getElementById('btnPendaftaranLabel').textContent = 'Pilih Keputusan';
+    document.getElementById('pendaftaranModal').classList.add('show');
+  }
+
+  let pendaftaranOpt = null;
+
+  function setPendaftaranOpt(opt) {
+    pendaftaranOpt = opt;
+    const setEl = document.getElementById('optSetujui');
+    const rekEl = document.getElementById('optRekomen');
+    const btnEl = document.getElementById('btnPendaftaranSubmit');
+    const btnLabel = document.getElementById('btnPendaftaranLabel');
+    const rekSec = document.getElementById('pRekomenSection');
+    if (opt === 'setujui') {
+      setEl.style.borderColor = '#0f9d58'; setEl.style.background = '#f0fdf4'; setEl.style.color = '#065f46';
+      rekEl.style.borderColor = '#e2e8f0'; rekEl.style.background = ''; rekEl.style.color = '#64748b';
+      rekSec.style.display = 'none';
+      btnLabel.textContent = 'Setujui & Lanjutkan ke Admin';
+    } else {
+      rekEl.style.borderColor = '#f59e0b'; rekEl.style.background = '#fffbeb'; rekEl.style.color = '#92400e';
+      setEl.style.borderColor = '#e2e8f0'; setEl.style.background = ''; setEl.style.color = '#64748b';
+      rekSec.style.display = 'block';
+      btnLabel.textContent = 'Kirim Rekomendasi ke Admin';
+    }
+    btnEl.disabled = false; btnEl.style.opacity = '1';
+  }
+
+  function submitPendaftaran() {
+    const cId = document.getElementById('pModalId').value;
+    const catatan = document.getElementById('pModalCatatan').value.trim();
+    const companies = getCompanies();
+    const idx = companies.findIndex(c => c.id === cId);
+    if (idx < 0) return;
+    if (pendaftaranOpt === 'setujui') {
+      companies[idx].status = 'verified';
+      companies[idx].pengawasId = pengawasId;
+      companies[idx].notifPengawas = null;
+      companies[idx].catatanPengawas = catatan || 'Data perusahaan telah diverifikasi oleh pengawas.';
+      saveCompanies(companies);
+      closeModal('pendaftaranModal');
+      showToast('Perusahaan disetujui dan berhasil diverifikasi!');
+    } else if (pendaftaranOpt === 'rekomen') {
+      const rekPw = document.getElementById('pRekomenPengawas').value;
+      const alasan = document.getElementById('pRekomenAlasan').value.trim();
+      companies[idx].status = 'pending_admin';
+      companies[idx].pengawasId = null;
+      companies[idx].notifPengawas = rekPw;
+      companies[idx].rekomenPengawas = rekPw;
+      companies[idx].catatanPengawas = catatan || '';
+      companies[idx].alasanRekomen = alasan || 'Direkomendasikan oleh pengawas saat ini.';
+      saveCompanies(companies);
+      closeModal('pendaftaranModal');
+      showToast('Rekomendasi pengawas lain dikirim kembali ke admin!');
+    } else {
+      showToast('Pilih keputusan terlebih dahulu!');
+      return;
+    }
+    pendaftaranOpt = null;
+    loadData();
+  }
+
+  function kirimCatatan() {
+    const cId = document.getElementById('feedCompany').value;
+    const lId = document.getElementById('feedLaporan').value;
+    const jenis = document.getElementById('feedJenis').value;
+    const isi = document.getElementById('feedIsi').value.trim();
+    if (!isi) { showToast('Isi catatan tidak boleh kosong!'); return; }
+    const catatan = getCatatan();
+    const today = new Date().toISOString().split('T')[0];
+    catatan.push({ id: 'n' + Date.now(), companyId: cId, pengawasId, laporanId: lId || null, jenis, isi, tglKirim: today });
+    saveCatatan(catatan);
+    document.getElementById('feedIsi').value = '';
+    showToast('Catatan berhasil dikirim ke perusahaan!');
+    loadData();
+  }
+
+  const pageMap = { dashboard:'Dashboard Pengawas', 'daftar-perusahaan':'Daftar Perusahaan Binaan', 'pendaftaran-baru':'Pendaftaran Baru', menunggu:'Menunggu Verifikasi', 'riwayat-verif':'Riwayat Verifikasi', feedback:'Feedback & Catatan' };
+
+  function goPage(id) {
+    document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
+    const t = document.getElementById(id);
+    if (t) t.classList.add('active-page');
+    document.getElementById('pageTitle').textContent = pageMap[id] || id;
+    document.querySelectorAll('.nav-link').forEach(l => { l.classList.remove('active'); if (l.dataset.page === id) l.classList.add('active'); });
+    window.scrollTo(0, 0);
+  }
+
+  document.querySelectorAll('.nav-link').forEach(l => l.addEventListener('click', e => { e.preventDefault(); goPage(l.dataset.page); }));
+
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+  document.getElementById('verifModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal('verifModal'); });
+  document.getElementById('pendaftaranModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal('pendaftaranModal'); });
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 3500);
+  }
+
+  function doLogout() {
+    localStorage.removeItem('p2k3_role');
+    localStorage.removeItem('p2k3_current_pengawas');
+    window.location.href = 'login.html';
+  }
+
+  loadData();
+</script>
+</body>
+</html>
