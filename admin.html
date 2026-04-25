@@ -14,7 +14,7 @@
 <!-- SIDEBAR -->
 <div class="sidebar d-flex flex-column">
   <div class="brand">
-    <div class="brand-icon-box"><i class="bi bi-shield-check" style="color:white;"></i></div>
+    <div class="brand-icon-box"><i class="bi bi-shield-check"></i></div>
     <span>Lapor P2K3</span>
   </div>
   <div class="nav-section">
@@ -22,33 +22,38 @@
     <a href="#" class="nav-link active" data-page="dashboard"><i class="bi bi-house-door"></i> Dashboard</a>
   </div>
   <div class="nav-section">
-    <div class="nav-section-title">PENDAFTARAN</div>
-    <a href="#" class="nav-link" data-page="persetujuan" id="navPersetujuan"><i class="bi bi-clipboard-check"></i> Verifikasi Perusahaan</a>
-    <a href="#" class="nav-link" data-page="perusahaan"><i class="bi bi-building"></i> Daftar Perusahaan</a>
+    <div class="nav-section-title">MANAJEMEN</div>
+    <a href="#" class="nav-link" data-page="perusahaan"><i class="bi bi-building"></i> Perusahaan</a>
+    <a href="#" class="nav-link" data-page="pengawas"><i class="bi bi-person-badge"></i> Pengawas K3</a>
+    <a href="#" class="nav-link" data-page="pendaftaran" id="navPendaftaran"><i class="bi bi-building-add"></i> Pendaftaran Baru</a>
   </div>
   <div class="nav-section">
     <div class="nav-section-title">LAPORAN</div>
-    <a href="#" class="nav-link" data-page="laporan-masuk" id="navLaporan"><i class="bi bi-inbox"></i> Laporan Disetujui</a>
+    <a href="#" class="nav-link" data-page="verif-admin" id="navVerif"><i class="bi bi-inbox-fill"></i> Menunggu Finalisasi</a>
     <a href="#" class="nav-link" data-page="arsip"><i class="bi bi-archive"></i> Arsip Laporan</a>
   </div>
   <div class="nav-section">
-    <div class="nav-section-title">MANAJEMEN</div>
-    <a href="#" class="nav-link" data-page="users"><i class="bi bi-people"></i> Manajemen User</a>
-    <a href="#" class="nav-link" data-page="statistik"><i class="bi bi-bar-chart"></i> Statistik & Rekap</a>
+    <div class="nav-section-title">ANALITIK</div>
+    <a href="#" class="nav-link" data-page="rekap"><i class="bi bi-bar-chart-line"></i> Rekap & Analisis</a>
   </div>
+  <div class="nav-section">
+    <div class="nav-section-title">SISTEM</div>
+    <a href="#" class="nav-link" data-page="akun-admin"><i class="bi bi-gear"></i> Pengaturan Akun</a>
+  </div>
+  <div class="sidebar-footer">Lapor P2K3 · Permenaker No.13/2025</div>
 </div>
 
 <!-- NAVBAR -->
 <div class="navbar-custom">
   <div class="page-title" id="pageTitle">Dashboard Admin</div>
   <div class="d-flex align-items-center gap-2">
-    <button class="notif-btn" onclick="goPage('persetujuan')">
-      <i class="bi bi-bell" style="font-size:16px;color:#64748b;"></i>
+    <button class="notif-btn" onclick="goPage('verif-admin')">
+      <i class="bi bi-bell" style="font-size:15px;color:#64748b;"></i>
       <span class="notif-dot" id="notifDot" style="display:none;"></span>
     </button>
     <div class="user-badge">
-      <i class="bi bi-shield-lock" style="color:#0f9d58;"></i>
-      <span style="font-weight:600;">Admin UPTD</span>
+      <i class="bi bi-shield-lock text-success"></i>
+      <span style="font-weight:600;">Administrator</span>
     </div>
     <button class="logout-btn" onclick="doLogout()"><i class="bi bi-box-arrow-right"></i> Keluar</button>
   </div>
@@ -57,590 +62,1104 @@
 <!-- CONTENT -->
 <div class="content">
 
-  <!-- DASHBOARD -->
+  <!-- ===================== DASHBOARD ===================== -->
   <div id="dashboard" class="page-section active-page">
     <div class="row g-3 mb-4">
-      <div class="col-6 col-md-3">
+      <div class="col-6 col-md-2">
         <div class="stat-card">
-          <div class="d-flex justify-content-between align-items-start">
-            <div><div class="stat-label">Total Perusahaan</div><div class="stat-value" id="dashTotalPerusahaan">0</div><div class="stat-sub">Terverifikasi</div></div>
-            <div class="stat-icon icon-green"><i class="bi bi-building"></i></div>
-          </div>
+          <div class="stat-label">Total Perusahaan</div>
+          <div class="stat-value" id="dashTotalP">0</div>
+          <div class="stat-sub">Terdaftar</div>
         </div>
       </div>
-      <div class="col-6 col-md-3">
+      <div class="col-6 col-md-2">
         <div class="stat-card">
-          <div class="d-flex justify-content-between align-items-start">
-            <div><div class="stat-label">Menunggu Verifikasi</div><div class="stat-value" id="dashMenungguVerif">0</div><div class="stat-sub">Pengajuan baru</div></div>
-            <div class="stat-icon icon-yellow"><i class="bi bi-hourglass-split"></i></div>
-          </div>
+          <div class="stat-label">Aktif / Verified</div>
+          <div class="stat-value" id="dashAktif">0</div>
+          <div class="stat-sub">Memiliki binaan</div>
         </div>
       </div>
-      <div class="col-6 col-md-3">
+      <div class="col-6 col-md-2">
         <div class="stat-card">
-          <div class="d-flex justify-content-between align-items-start">
-            <div><div class="stat-label">Laporan Siap Arsip</div><div class="stat-value" id="dashLaporanSiap">0</div><div class="stat-sub">Approved pengawas</div></div>
-            <div class="stat-icon icon-blue"><i class="bi bi-inbox"></i></div>
-          </div>
+          <div class="stat-label">Total Laporan</div>
+          <div class="stat-value" id="dashTotalL">0</div>
+          <div class="stat-sub">Semua status</div>
         </div>
       </div>
-      <div class="col-6 col-md-3">
+      <div class="col-6 col-md-2">
         <div class="stat-card">
-          <div class="d-flex justify-content-between align-items-start">
-            <div><div class="stat-label">Laporan Diarsipkan</div><div class="stat-value" id="dashArsip">0</div><div class="stat-sub">Total final</div></div>
-            <div class="stat-icon icon-purple"><i class="bi bi-archive"></i></div>
-          </div>
+          <div class="stat-label">Menunggu Final</div>
+          <div class="stat-value" id="dashMenungguFinal">0</div>
+          <div class="stat-sub">Sudah disetujui</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="stat-card">
+          <div class="stat-label">Total KK (period)</div>
+          <div class="stat-value" id="dashTotalKK">0</div>
+          <div class="stat-sub">Laporan final</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="stat-card">
+          <div class="stat-label">Pengawas Aktif</div>
+          <div class="stat-value" id="dashPengawasAktif">0</div>
+          <div class="stat-sub">Dari total</div>
         </div>
       </div>
     </div>
 
-    <div class="row g-3">
-      <div class="col-md-6">
-        <div class="table-card">
-          <div class="section-header">
-            <div class="section-title"><i class="bi bi-clipboard-check me-2 text-warning"></i>Pengajuan Perusahaan Baru</div>
-            <a href="#" class="text-success small fw-semibold" onclick="goPage('persetujuan');return false;">Lihat semua →</a>
-          </div>
-          <div id="dashPengajuanList"></div>
+    <div class="row g-3 mb-3">
+      <div class="col-md-4">
+        <div class="table-card h-100">
+          <div class="section-title mb-3"><i class="bi bi-inbox-fill me-2 text-warning"></i>Menunggu Finalisasi Admin</div>
+          <div id="dashVerifList"><p class="text-muted small">Tidak ada laporan.</p></div>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="table-card">
-          <div class="section-header">
-            <div class="section-title"><i class="bi bi-inbox me-2 text-primary"></i>Laporan Siap Diarsipkan</div>
-            <a href="#" class="text-success small fw-semibold" onclick="goPage('laporan-masuk');return false;">Lihat semua →</a>
-          </div>
-          <div id="dashLaporanList"></div>
+      <div class="col-md-4">
+        <div class="table-card h-100">
+          <div class="section-title mb-3"><i class="bi bi-building-add me-2 text-primary"></i>Pendaftaran Baru</div>
+          <div id="dashPendaftaranList"><p class="text-muted small">Tidak ada pendaftaran baru.</p></div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-card h-100">
+          <div class="section-title mb-3"><i class="bi bi-graph-up-arrow me-2 text-success"></i>Ringkasan Statistik K3</div>
+          <div id="dashStatsK3"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- VERIFIKASI PERUSAHAAN -->
-  <div id="persetujuan" class="page-section">
-    <div class="alert-info-soft mb-3">
-      <i class="bi bi-info-circle me-2"></i>Perusahaan berikut telah mendaftar dan menunggu verifikasi admin. Pilih pengawas yang sesuai untuk setiap perusahaan.
-    </div>
-    <div id="persetujuanList"><p class="text-muted">Tidak ada pengajuan yang menunggu.</p></div>
-  </div>
-
-  <!-- DAFTAR PERUSAHAAN -->
+  <!-- ===================== PERUSAHAAN ===================== -->
   <div id="perusahaan" class="page-section">
     <div class="table-card">
       <div class="section-header">
-        <div class="section-title"><i class="bi bi-building me-2 text-success"></i>Semua Perusahaan Terdaftar</div>
-        <input type="text" class="form-control" style="width:220px;font-size:13px;" placeholder="Cari perusahaan..." id="searchPerusahaan" oninput="filterPerusahaan()">
+        <div class="section-title"><i class="bi bi-building me-2 text-success"></i>Manajemen Perusahaan</div>
+        <div class="d-flex gap-2">
+          <input type="text" class="form-control form-control-sm" style="width:180px;" placeholder="Cari perusahaan..." id="searchPerusahaan" oninput="loadData()">
+          <select class="form-select form-select-sm" style="width:140px;" id="filterStatusP" onchange="loadData()">
+            <option value="">Semua Status</option>
+            <option value="verified">Aktif</option>
+            <option value="pending_admin">Menunggu Admin</option>
+            <option value="pending_pengawas">Menunggu Pengawas</option>
+          </select>
+        </div>
       </div>
-      <table class="table mb-0">
-        <thead><tr><th>Nama Perusahaan</th><th>Wilayah</th><th>Status</th><th></th></tr></thead>
-        <tbody id="perusahaanBody"></tbody>
-      </table>
+      <div class="table-responsive mt-2">
+        <table class="table mb-0">
+          <thead><tr><th>Nama Perusahaan</th><th>Wilayah</th><th>Bidang</th><th>Total TK</th><th>Pengawas Binaan</th><th>Status</th><th>Tgl Daftar</th><th></th></tr></thead>
+          <tbody id="perusahaanBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
-  <!-- LAPORAN DISETUJUI (siap arsip) -->
-  <div id="laporan-masuk" class="page-section">
-    <div class="alert-success-soft mb-3">
-      <i class="bi bi-check-circle me-2"></i>Laporan berikut telah diverifikasi oleh pengawas. Klik "Finalkan" untuk mengarsipkan laporan ke sistem.
+  <!-- ===================== PENGAWAS ===================== -->
+  <div id="pengawas" class="page-section">
+    <div class="table-card mb-3">
+      <div class="section-header">
+        <div class="section-title"><i class="bi bi-person-badge me-2 text-success"></i>Manajemen Pengawas K3</div>
+        <button class="btn btn-sm btn-success" onclick="openAddPengawasModal()"><i class="bi bi-plus me-1"></i>Tambah Pengawas</button>
+      </div>
+      <div class="table-responsive mt-2">
+        <table class="table mb-0">
+          <thead><tr><th>Nama</th><th>NIP</th><th>Jabatan</th><th>Wilayah Binaan</th><th>Jml Binaan</th><th>Status</th><th></th></tr></thead>
+          <tbody id="pengawasBody"></tbody>
+        </table>
+      </div>
     </div>
-    <div id="laporanMasukList"><p class="text-muted">Tidak ada laporan yang menunggu finalisasi.</p></div>
   </div>
 
-  <!-- ARSIP LAPORAN -->
+  <!-- ===================== PENDAFTARAN BARU ===================== -->
+  <div id="pendaftaran" class="page-section">
+    <div class="alert-info-soft mb-3">
+      <i class="bi bi-info-circle me-2"></i>Daftar perusahaan yang menunggu tindakan admin. Tetapkan pengawas binaan untuk mengaktifkan akun perusahaan.
+    </div>
+    <div id="pendaftaranAdminList"><p class="text-muted">Tidak ada pendaftaran yang menunggu.</p></div>
+  </div>
+
+  <!-- ===================== VERIFIKASI ADMIN ===================== -->
+  <div id="verif-admin" class="page-section">
+    <div class="alert-warn-soft mb-3">
+      <i class="bi bi-exclamation-triangle me-2"></i>Laporan di bawah telah disetujui oleh pengawas dan menunggu finalisasi oleh admin. Setelah difinalisasi, laporan akan masuk ke arsip.
+    </div>
+    <div id="verifAdminList"><p class="text-muted">Tidak ada laporan yang menunggu finalisasi.</p></div>
+  </div>
+
+  <!-- ===================== ARSIP LAPORAN ===================== -->
   <div id="arsip" class="page-section">
     <div class="table-card">
       <div class="section-header">
-        <div class="section-title"><i class="bi bi-archive me-2 text-primary"></i>Arsip Laporan P2K3</div>
+        <div class="section-title"><i class="bi bi-archive me-2 text-success"></i>Arsip Laporan Final</div>
         <div class="d-flex gap-2">
-          <select class="form-select form-select-sm" style="width:140px;font-size:12.5px;" id="filterTahun" onchange="loadData()"><option value="">Semua Tahun</option><option>2026</option><option>2025</option><option>2024</option></select>
-          <button class="btn btn-sm btn-outline-green" style="font-size:12.5px;" onclick="showToast('Demo: Ekspor Excel belum tersedia')"><i class="bi bi-download me-1"></i>Ekspor Excel</button>
+          <input type="text" class="form-control form-control-sm" style="width:180px;" placeholder="Cari perusahaan..." id="searchArsip" oninput="loadData()">
+          <select class="form-select form-select-sm" style="width:140px;" id="filterArsipTahun" onchange="loadData()">
+            <option value="">Semua Tahun</option>
+          </select>
         </div>
       </div>
-      <table class="table mb-0">
-        <thead><tr><th>Perusahaan</th><th>Periode</th><th>Pengawas</th><th>Kecelakaan</th><th>PAK</th><th>Tgl Final</th><th>Status</th></tr></thead>
-        <tbody id="arsipBody"></tbody>
-      </table>
+      <div class="table-responsive mt-2">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>No. Laporan</th><th>Perusahaan</th><th>Wilayah</th>
+              <th>Periode</th><th>Total TK</th><th>KK</th><th>FR</th><th>SR</th>
+              <th>PAK</th><th>Meeting</th><th>MCU</th><th>Tgl Final</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="arsipBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
-  <!-- MANAJEMEN USER -->
-  <div id="users" class="page-section">
+  <!-- ===================== REKAP & ANALISIS ===================== -->
+  <div id="rekap" class="page-section">
     <div class="row g-3 mb-3">
-      <div class="col-md-8">
-        <div class="table-card">
-          <div class="section-header">
-            <div class="section-title"><i class="bi bi-people me-2 text-success"></i>Daftar Pengguna Sistem</div>
-          </div>
-          <table class="table mb-0">
-            <thead><tr><th>Nama</th><th>Role</th><th>NIP / Email</th><th>Password</th><th>Status</th></tr></thead>
-            <tbody id="usersBody"></tbody>
-          </table>
-        </div>
+      <div class="col-md-4">
+        <label class="form-label">Filter Tahun</label>
+        <select class="form-select form-select-sm" id="rekapTahun" onchange="buildRekap()">
+          <option value="">Semua Tahun</option>
+        </select>
       </div>
       <div class="col-md-4">
-        <div class="form-card">
-          <h6 class="fw-bold mb-3"><i class="bi bi-person-plus me-2 text-success"></i>Tambah Akun Pengawas</h6>
-          <div class="mb-3">
-            <label class="form-label">Nama Pengawas</label>
-            <input type="text" class="form-control" id="newPwNama" placeholder="Nama lengkap">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">NIP</label>
-            <input type="text" class="form-control" id="newPwNip" placeholder="Nomor Induk Pegawai">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input type="text" class="form-control" id="newPwPassword" placeholder="Password untuk login">
-          </div>
-          <button class="btn-green btn w-100" onclick="tambahPengawas()"><i class="bi bi-save me-2"></i>Simpan Akun</button>
-        </div>
+        <label class="form-label">Filter Wilayah</label>
+        <select class="form-select form-select-sm" id="rekapWilayah" onchange="buildRekap()">
+          <option value="">Semua Wilayah</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Filter Periode</label>
+        <select class="form-select form-select-sm" id="rekapPeriode" onchange="buildRekap()">
+          <option value="">Semua Periode</option>
+          <option value="Semester I">Semester I</option>
+          <option value="Semester II">Semester II</option>
+        </select>
       </div>
     </div>
-  </div>
 
-  <!-- STATISTIK -->
-  <div id="statistik" class="page-section">
-    <div class="row g-3 mb-4">
-      <div class="col-md-4">
-        <div class="stat-card">
-          <div class="stat-label">Total Perusahaan Aktif</div>
-          <div class="stat-value" id="statPerusahaan">0</div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="stat-card">
-          <div class="stat-label">Total Laporan Masuk</div>
-          <div class="stat-value" id="statLaporan">0</div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="stat-card">
-          <div class="stat-label">Total Kecelakaan Kerja (tercatat)</div>
-          <div class="stat-value" id="statKK">0</div>
-        </div>
+    <!-- Ringkasan Kuantitatif Agregat -->
+    <div class="row g-3 mb-4" id="rekapStats"></div>
+
+    <!-- Tabel Rekap Kuantitatif -->
+    <div class="table-card mb-3">
+      <div class="section-title mb-3"><i class="bi bi-table me-2 text-success"></i>Rekap Kuantitatif Laporan K3</div>
+      <div class="table-responsive">
+        <table class="table mb-0" id="rekapTable">
+          <thead>
+            <tr>
+              <th rowspan="2" class="align-middle">Perusahaan</th>
+              <th rowspan="2" class="align-middle">Periode</th>
+              <th colspan="5" class="text-center border-start border-end" style="background:#f0fdf4;">Kecelakaan Kerja</th>
+              <th colspan="3" class="text-center border-end" style="background:#eff6ff;">Indikator K3</th>
+              <th colspan="4" class="text-center border-end" style="background:#fef3c7;">Partisipasi</th>
+              <th colspan="2" class="text-center" style="background:#fdf4ff;">Kesehatan</th>
+            </tr>
+            <tr>
+              <th class="border-start">Ringan</th><th>Sedang</th><th>Berat</th><th>Fatal</th><th class="border-end">Total</th>
+              <th>FR</th><th>SR</th><th class="border-end">PAK</th>
+              <th>Meeting</th><th>Inspeksi</th><th>Program</th><th class="border-end">Pelatihan</th>
+              <th>MCU</th><th>Kepatuhan APD(%)</th>
+            </tr>
+          </thead>
+          <tbody id="rekapBody"></tbody>
+        </table>
       </div>
     </div>
+
+    <!-- Rekap Kualitatif -->
     <div class="table-card">
-      <div class="section-title mb-3"><i class="bi bi-bar-chart me-2 text-success"></i>Rekap Per Perusahaan</div>
-      <table class="table mb-0">
-        <thead><tr><th>Perusahaan</th><th>Total Laporan</th><th>Final</th><th>Total KK</th><th>Total PAK</th></tr></thead>
-        <tbody id="rekapBody"></tbody>
-      </table>
+      <div class="section-title mb-3"><i class="bi bi-chat-text me-2 text-primary"></i>Rekap Isu & Catatan Kualitatif</div>
+      <div id="rekapKualitatif"></div>
     </div>
   </div>
 
-</div>
+  <!-- ===================== AKUN ADMIN ===================== -->
+  <div id="akun-admin" class="page-section">
+    <div class="form-card" style="max-width:480px;">
+      <h6 class="fw-bold mb-3"><i class="bi bi-gear me-2 text-success"></i>Pengaturan Akun Administrator</h6>
+      <div class="mb-3">
+        <label class="form-label">Email Administrator</label>
+        <input type="email" class="form-control" id="adminEmail" placeholder="admin@uptd.go.id">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password Lama</label>
+        <input type="password" class="form-control" id="adminPassLama" placeholder="Masukkan password lama">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password Baru</label>
+        <input type="password" class="form-control" id="adminPassBaru" placeholder="Password baru (kosongkan jika tidak diubah)">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Konfirmasi Password Baru</label>
+        <input type="password" class="form-control" id="adminPassKonfirm" placeholder="Ulangi password baru">
+      </div>
+      <div class="alert-error" id="adminSettErr"></div>
+      <button class="btn-green btn" onclick="simpanAkunAdmin()"><i class="bi bi-save me-2"></i>Simpan Perubahan</button>
+    </div>
+  </div>
 
-<!-- MODAL VERIFIKASI PERUSAHAAN -->
-<div class="modal-overlay" id="verifModal">
+</div><!-- end .content -->
+
+<!-- MODAL: TAMBAH PENGAWAS -->
+<div class="modal-overlay" id="addPengawasModal">
   <div class="modal-box">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h6 class="fw-bold mb-0"><i class="bi bi-clipboard-check me-2 text-success"></i>Verifikasi & Tunjuk Pengawas</h6>
-      <button onclick="closeModal('verifModal')" style="background:none;border:none;font-size:18px;cursor:pointer;color:#64748b;">&times;</button>
+    <div class="modal-header-custom">
+      <div class="modal-title"><i class="bi bi-person-badge me-2 text-success"></i>Tambah / Edit Pengawas K3</div>
+      <button class="modal-close-btn" onclick="closeModal('addPengawasModal')">&times;</button>
     </div>
-    <div class="alert-info-soft mb-3"><i class="bi bi-info-circle me-2"></i>Pilih pengawas yang akan menangani verifikasi perusahaan ini. Data akan dikirim ke pengawas terpilih.</div>
-    <table class="table table-sm mb-3">
-      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Nama</td><td id="vModalNama" style="font-size:13px;font-weight:600;"></td></tr>
-      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Alamat</td><td id="vModalAlamat" style="font-size:13px;"></td></tr>
-      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Wilayah</td><td id="vModalWilayah" style="font-size:13px;"></td></tr>
-      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Email Perusahaan</td><td id="vModalEmail" style="font-size:13px;"></td></tr>
-      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Tgl Daftar</td><td id="vModalTglDaftar" style="font-size:13px;"></td></tr>
-    </table>
-    <input type="hidden" id="vModalId">
-    <div class="mb-3">
-      <label class="form-label">Pilih Pengawas</label>
-      <select class="form-select" id="vModalPengawas">
-        <option value="">-- Pilih Pengawas --</option>
-      </select>
+    <div class="modal-body">
+      <input type="hidden" id="pwEditId">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label required">Nama Lengkap</label>
+          <input type="text" class="form-control" id="pwNama" placeholder="Nama pengawas">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label required">NIP</label>
+          <input type="text" class="form-control" id="pwNip" placeholder="NIP (unik)">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Jabatan</label>
+          <input type="text" class="form-control" id="pwJabatan" placeholder="Pengawas K3 Ahli Muda, dll">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Wilayah Tugas</label>
+          <select class="form-select" id="pwWilayah">
+            <option value="">Pilih Wilayah</option>
+            <option>Kota Bekasi</option>
+            <option>Kab. Bekasi</option>
+            <option>Kab. Karawang</option>
+            <option>Kab. Purwakarta</option>
+            <option>Kab. Subang</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label required">Password Login</label>
+          <input type="text" class="form-control" id="pwPassword" placeholder="Set password untuk pengawas ini">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="pwStatus">
+            <option value="aktif">Aktif</option>
+            <option value="nonaktif">Non-aktif</option>
+          </select>
+        </div>
+      </div>
     </div>
-    <div class="mb-3">
-      <label class="form-label">Password Akun Perusahaan</label>
-      <input type="text" class="form-control" id="vModalKode" placeholder="Password yang akan dikirim via email">
-      <div class="form-text">Kosongkan untuk auto-generate. Akan dikirim ke email perusahaan bersama info akun.</div>
-    </div>
-    <div class="d-flex gap-2 justify-content-end">
-      <button class="btn btn-outline-danger" style="border-radius:6px;" onclick="tolakPerusahaan()"><i class="bi bi-x-lg me-1"></i>Tolak</button>
-      <button class="btn-green btn" id="btnVerifSetujui" onclick="setujuiPerusahaan()"><i class="bi bi-check-circle me-2"></i>Setujui & Kirim ke Pengawas</button>
+    <div class="modal-footer-custom">
+      <button class="btn btn-outline-secondary btn-sm" onclick="closeModal('addPengawasModal')">Batal</button>
+      <button class="btn btn-success btn-sm" onclick="simpanPengawas()"><i class="bi bi-save me-1"></i>Simpan</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL FINALISASI LAPORAN -->
-<div class="modal-overlay" id="laporanModal">
+<!-- MODAL: TETAPKAN PENGAWAS UNTUK PERUSAHAAN -->
+<div class="modal-overlay" id="tetapkanPengawasModal">
   <div class="modal-box">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h6 class="fw-bold mb-0">Finalisasi & Arsipkan Laporan</h6>
-      <button onclick="closeModal('laporanModal')" style="background:none;border:none;font-size:18px;cursor:pointer;color:#64748b;">&times;</button>
+    <div class="modal-header-custom">
+      <div class="modal-title"><i class="bi bi-person-check me-2 text-success"></i>Tetapkan Pengawas Binaan</div>
+      <button class="modal-close-btn" onclick="closeModal('tetapkanPengawasModal')">&times;</button>
     </div>
-    <div class="alert-success-soft mb-3"><i class="bi bi-check-circle me-2"></i>Laporan telah diverifikasi oleh pengawas. Siap difinalkan dan diarsipkan.</div>
-    <table class="table table-sm mb-3">
-      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Perusahaan</td><td id="lModalPerusahaan" style="font-size:13px;font-weight:600;"></td></tr>
-      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Periode</td><td id="lModalPeriode" style="font-size:13px;"></td></tr>
-      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Disetujui Pengawas</td><td id="lModalTglApprove" style="font-size:13px;"></td></tr>
-      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Kecelakaan Kerja</td><td id="lModalKK" style="font-size:13px;"></td></tr>
-      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">PAK</td><td id="lModalPAK" style="font-size:13px;"></td></tr>
-      <tr><td class="text-muted fw-semibold" style="font-size:12.5px;">Catatan Pengawas</td><td id="lModalCatatan" style="font-size:13px;color:#64748b;"></td></tr>
-    </table>
-    <input type="hidden" id="lModalId">
-    <div class="mb-3">
-      <label class="form-label">Catatan Final Admin (opsional)</label>
-      <textarea class="form-control" id="lModalCatatanAdmin" rows="2" placeholder="Catatan tambahan admin..."></textarea>
+    <div class="modal-body">
+      <input type="hidden" id="tpCompanyId">
+      <div class="info-panel mb-3">
+        <div class="info-row"><span class="info-label">Perusahaan</span><span class="info-value fw-bold" id="tpNama">—</span></div>
+        <div class="info-row"><span class="info-label">Wilayah</span><span class="info-value" id="tpWilayah">—</span></div>
+        <div class="info-row"><span class="info-label">Bidang Usaha</span><span class="info-value" id="tpBidang">—</span></div>
+        <div class="info-row"><span class="info-label">Email</span><span class="info-value" id="tpEmail">—</span></div>
+        <div class="info-row"><span class="info-label">Est. Jml TK</span><span class="info-value" id="tpTk">—</span></div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label required">Pilih Pengawas Binaan</label>
+        <select class="form-select" id="tpPengawas"></select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label required">Password Awal Perusahaan</label>
+        <input type="text" class="form-control" id="tpPassword" placeholder="Set password login untuk perusahaan ini">
+        <div class="form-text">Password ini yang digunakan perusahaan untuk login pertama kali.</div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Catatan Admin</label>
+        <textarea class="form-control" id="tpCatatan" rows="2" placeholder="Catatan persetujuan atau instruksi..."></textarea>
+      </div>
     </div>
-    <div class="d-flex gap-2 justify-content-end">
-      <button class="btn btn-outline-secondary" style="border-radius:var(--radius);" onclick="closeModal('laporanModal')">Batal</button>
-      <button class="btn-green btn" onclick="finalkanLaporan()"><i class="bi bi-check-circle me-2"></i>Finalkan & Arsipkan</button>
+    <div class="modal-footer-custom">
+      <button class="btn btn-outline-secondary btn-sm" onclick="closeModal('tetapkanPengawasModal')">Batal</button>
+      <button class="btn btn-success btn-sm" onclick="submitTetapkan()"><i class="bi bi-check-circle me-1"></i>Aktifkan Perusahaan</button>
     </div>
   </div>
 </div>
 
-<!-- Toast -->
+<!-- MODAL: FINALISASI LAPORAN -->
+<div class="modal-overlay" id="finalisasiModal">
+  <div class="modal-box modal-lg">
+    <div class="modal-header-custom">
+      <div class="modal-title"><i class="bi bi-archive me-2 text-success"></i>Finalisasi Laporan — Arsip</div>
+      <button class="modal-close-btn" onclick="closeModal('finalisasiModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="fLaporanId">
+      <h6 class="fw-bold mb-2" style="font-size:13px;">Ringkasan Laporan</h6>
+      <div class="info-panel mb-3">
+        <div class="row g-2">
+          <div class="col-md-6">
+            <div class="info-row"><span class="info-label">Perusahaan</span><span class="info-value fw-bold" id="fPerusahaan">—</span></div>
+            <div class="info-row"><span class="info-label">No. Laporan</span><span class="info-value" id="fNoLaporan">—</span></div>
+            <div class="info-row"><span class="info-label">Periode</span><span class="info-value" id="fPeriode">—</span></div>
+            <div class="info-row"><span class="info-label">Tgl Dikirim</span><span class="info-value" id="fTglSubmit">—</span></div>
+            <div class="info-row"><span class="info-label">Tgl Disetujui Pengawas</span><span class="info-value" id="fTglApprove">—</span></div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-row"><span class="info-label">Total TK</span><span class="info-value" id="fTK">—</span></div>
+            <div class="info-row"><span class="info-label">Jam Kerja Kumulatif</span><span class="info-value" id="fJamKerja">—</span></div>
+            <div class="info-row"><span class="info-label">Total KK</span><span class="info-value text-danger fw-bold" id="fKKTotal">—</span></div>
+            <div class="info-row"><span class="info-label">FR / SR</span><span class="info-value" id="fFRSR">—</span></div>
+            <div class="info-row"><span class="info-label">PAK</span><span class="info-value" id="fPAK">—</span></div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-row"><span class="info-label">Kelengkapan Data</span><span class="info-value" id="fNilaiKelengkapan">—</span></div>
+            <div class="info-row"><span class="info-label">Kepatuhan Program K3</span><span class="info-value" id="fNilaiProgram">—</span></div>
+            <div class="info-row"><span class="info-label">Kondisi Umum K3</span><span class="info-value" id="fNilaiUmum">—</span></div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-row"><span class="info-label">Catatan Pengawas</span><span class="info-value small" id="fCatatan" style="max-width:200px;word-break:break-word;">—</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Catatan Finalisasi Admin</label>
+        <textarea class="form-control" id="fCatatanAdmin" rows="3" placeholder="Catatan final atau instruksi dari admin untuk arsip laporan ini..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer-custom">
+      <button class="btn btn-outline-secondary btn-sm" onclick="closeModal('finalisasiModal')">Batal</button>
+      <button class="btn btn-danger btn-sm me-1" onclick="tolakLaporan()"><i class="bi bi-x-circle me-1"></i>Kembalikan ke Pengawas</button>
+      <button class="btn btn-success btn-sm" onclick="finalisasiLaporan()"><i class="bi bi-archive me-1"></i>Finalisasi & Arsipkan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: DETAIL LAPORAN ARSIP -->
+<div class="modal-overlay" id="detailArsipModal">
+  <div class="modal-box modal-lg">
+    <div class="modal-header-custom">
+      <div class="modal-title" id="detailArsipTitle"><i class="bi bi-file-earmark-check me-2 text-success"></i>Detail Laporan</div>
+      <button class="modal-close-btn" onclick="closeModal('detailArsipModal')">&times;</button>
+    </div>
+    <div class="modal-body" id="detailArsipBody"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
 <div id="toast"><i class="bi bi-check-circle me-2"></i><span id="toastMsg"></span></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  if (localStorage.getItem('p2k3_role') !== 'admin') window.location.href = 'login.html';
+/* =========================================================
+   STORAGE & AUTH GUARD
+   ========================================================= */
+const SK = {
+  companies:'p2k3_companies', laporan:'p2k3_laporan',
+  catatan:'p2k3_catatan', pengawasList:'p2k3_pengawas_list',
+  role:'p2k3_role', adminCred:'p2k3_admin_credentials'
+};
+if (localStorage.getItem(SK.role) !== 'admin') {
+  window.location.href = 'index.html';
+}
 
-  function getPengawasList() { return JSON.parse(localStorage.getItem('p2k3_pengawas_list') || '[]'); }
-  function getCompanies() { return JSON.parse(localStorage.getItem('p2k3_companies') || '[]'); }
-  function getLaporan() { return JSON.parse(localStorage.getItem('p2k3_laporan') || '[]'); }
-  function saveCompanies(arr) { localStorage.setItem('p2k3_companies', JSON.stringify(arr)); }
-  function saveLaporan(arr) { localStorage.setItem('p2k3_laporan', JSON.stringify(arr)); }
-  function savePengawasList(arr) { localStorage.setItem('p2k3_pengawas_list', JSON.stringify(arr)); }
+const getCompanies    = () => JSON.parse(localStorage.getItem(SK.companies)    || '[]');
+const getLaporan      = () => JSON.parse(localStorage.getItem(SK.laporan)      || '[]');
+const getCatatan      = () => JSON.parse(localStorage.getItem(SK.catatan)      || '[]');
+const getPengawasList = () => JSON.parse(localStorage.getItem(SK.pengawasList) || '[]');
+const saveCompanies   = a  => localStorage.setItem(SK.companies,    JSON.stringify(a));
+const saveLaporan     = a  => localStorage.setItem(SK.laporan,      JSON.stringify(a));
+const savePengawasList= a  => localStorage.setItem(SK.pengawasList, JSON.stringify(a));
 
-  function genKode(nama) {
-    return nama.replace(/[^a-zA-Z]/g,'').toUpperCase().substring(0,5) + new Date().getFullYear();
-  }
+const STATUS_LABELS  = { draft:'Draft', submitted:'Dikirim', approved:'Disetujui', returned:'Dikembalikan', final:'Final' };
+const STATUS_CLASSES = { draft:'badge-draft', submitted:'badge-pending', approved:'badge-disetujui', returned:'badge-returned', final:'badge-final' };
 
-  function loadData() {
-    const pengawasList = getPengawasList();
-    const companies = getCompanies();
-    const laporan = getLaporan();
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+const PAGE_MAP = {
+  dashboard:'Dashboard Admin', perusahaan:'Manajemen Perusahaan',
+  pengawas:'Manajemen Pengawas K3', pendaftaran:'Pendaftaran Baru',
+  'verif-admin':'Menunggu Finalisasi', arsip:'Arsip Laporan',
+  rekap:'Rekap & Analisis K3', 'akun-admin':'Pengaturan Akun Admin'
+};
 
-    const verified = companies.filter(c => c.status === 'verified');
-    const pendingAdmin = companies.filter(c => c.status === 'pending_admin' || c.status === 'pending_pengawas');
-    const approvedLaporan = laporan.filter(l => l.status === 'approved');
-    const finalLaporan = laporan.filter(l => l.status === 'final');
+function goPage(id) {
+  document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active-page');
+  document.getElementById('pageTitle').textContent = PAGE_MAP[id] || id;
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.classList.remove('active');
+    if (l.dataset.page === id) l.classList.add('active');
+  });
+  if (id === 'rekap') buildRekap();
+  if (id === 'akun-admin') loadAkunAdmin();
+  window.scrollTo(0, 0);
+}
 
-    document.getElementById('dashTotalPerusahaan').textContent = verified.length;
-    document.getElementById('dashMenungguVerif').textContent = pendingAdmin.length;
-    document.getElementById('dashLaporanSiap').textContent = approvedLaporan.length;
-    document.getElementById('dashArsip').textContent = finalLaporan.length;
+document.querySelectorAll('.nav-link').forEach(l =>
+  l.addEventListener('click', e => { e.preventDefault(); goPage(l.dataset.page); })
+);
 
-    document.getElementById('notifDot').style.display = (pendingAdmin.length > 0 || approvedLaporan.length > 0) ? 'block' : 'none';
+/* =========================================================
+   LOAD DATA
+   ========================================================= */
+function loadData() {
+  const companies    = getCompanies();
+  const allLaporan   = getLaporan();
+  const pengawasList = getPengawasList();
 
-    const navP = document.getElementById('navPersetujuan');
-    const oldP = navP.querySelector('.notif-badge');
-    if (oldP) oldP.remove();
-    if (pendingAdmin.length > 0) {
-      const b = document.createElement('span'); b.className = 'notif-badge'; b.textContent = pendingAdmin.length; navP.appendChild(b);
-    }
-    const navL = document.getElementById('navLaporan');
-    const oldL = navL.querySelector('.notif-badge');
-    if (oldL) oldL.remove();
-    if (approvedLaporan.length > 0) {
-      const b = document.createElement('span'); b.className = 'notif-badge'; b.textContent = approvedLaporan.length; navL.appendChild(b);
-    }
+  const verified  = companies.filter(c => c.status === 'verified');
+  const pending   = companies.filter(c => ['pending_admin','pending_pengawas'].includes(c.status));
+  const lapApproved = allLaporan.filter(l => l.status === 'approved');
+  const lapFinal  = allLaporan.filter(l => l.status === 'final');
+  const pwAktif   = pengawasList.filter(p => p.status === 'aktif');
 
-    const dpl = document.getElementById('dashPengajuanList');
-    if (pendingAdmin.length === 0) {
-      dpl.innerHTML = '<p class="text-muted small py-2">Tidak ada pengajuan baru.</p>';
-    } else {
-      dpl.innerHTML = pendingAdmin.slice(0,3).map(c =>
-        `<div style="padding:10px 0;border-bottom:1px solid #f1f5f9;">
-          <div style="font-size:13.5px;font-weight:700;">${c.nama}</div>
-          <div style="font-size:12px;color:#64748b;">${c.wilayah} · ${c.tglDaftar}</div>
-          <button class="btn btn-sm btn-outline-warning mt-1" style="font-size:11.5px;" onclick="openVerifModal('${c.id}')"><i class="bi bi-clipboard-check me-1"></i>Verifikasi</button>
+  const totalKK = lapFinal.reduce((s,l) =>
+    s + (l.kkRingan||0) + (l.kkSedang||0) + (l.kkBerat||0) + (l.kkFatal||0), 0);
+
+  // Dashboard stats
+  document.getElementById('dashTotalP').textContent         = companies.length;
+  document.getElementById('dashAktif').textContent          = verified.length;
+  document.getElementById('dashTotalL').textContent         = allLaporan.length;
+  document.getElementById('dashMenungguFinal').textContent  = lapApproved.length;
+  document.getElementById('dashTotalKK').textContent        = totalKK;
+  document.getElementById('dashPengawasAktif').textContent  = `${pwAktif.length}/${pengawasList.length}`;
+  document.getElementById('notifDot').style.display = (lapApproved.length + pending.length) > 0 ? 'block' : 'none';
+
+  // Dashboard: menunggu finalisasi
+  const dvl = document.getElementById('dashVerifList');
+  dvl.innerHTML = lapApproved.length === 0
+    ? '<p class="text-muted small">Tidak ada laporan menunggu finalisasi.</p>'
+    : lapApproved.slice(0,5).map(l => {
+        const c = companies.find(x => x.id === l.companyId);
+        return `<div class="laporan-item border-warning-left">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-semibold" style="font-size:13px;">${c?.nama||'—'}</div>
+              <div class="text-muted" style="font-size:11.5px;">${l.noLaporan||'—'} · ${l.periode} ${l.tahun}</div>
+            </div>
+            <button class="btn btn-sm btn-outline-success" style="font-size:11px;" onclick="openFinalisasiModal('${l.id}')">Finalisasi</button>
+          </div>
+        </div>`;
+      }).join('');
+
+  // Dashboard: pendaftaran baru
+  const dpl = document.getElementById('dashPendaftaranList');
+  dpl.innerHTML = pending.length === 0
+    ? '<p class="text-muted small">Tidak ada pendaftaran baru.</p>'
+    : pending.slice(0,5).map(c =>
+        `<div class="laporan-item border-success-left">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-semibold" style="font-size:13px;">${c.nama}</div>
+              <div class="text-muted" style="font-size:11.5px;">${c.wilayah||'—'} · ${c.tglDaftar||'—'}</div>
+            </div>
+            <button class="btn btn-sm btn-outline-primary" style="font-size:11px;" onclick="openTetapkanModal('${c.id}')">Tinjau</button>
+          </div>
         </div>`
       ).join('');
-    }
 
-    const dll = document.getElementById('dashLaporanList');
-    if (approvedLaporan.length === 0) {
-      dll.innerHTML = '<p class="text-muted small py-2">Tidak ada laporan yang menunggu finalisasi.</p>';
-    } else {
-      dll.innerHTML = approvedLaporan.slice(0,3).map(l => {
-        const c = companies.find(x => x.id === l.companyId);
-        return `<div style="padding:10px 0;border-bottom:1px solid #f1f5f9;">
-          <div style="font-size:13.5px;font-weight:700;">${c?.nama || '—'}</div>
-          <div style="font-size:12px;color:#64748b;">${l.periode} · Disetujui: ${l.tglApprove}</div>
-          <button class="btn btn-sm btn-outline-primary mt-1" style="font-size:11.5px;" onclick="openLaporanModal('${l.id}')"><i class="bi bi-archive me-1"></i>Finalkan</button>
-        </div>`;
+  // Dashboard stats K3
+  const nowMonth = new Date().toISOString().substring(0,7);
+  const lapBulanIni = allLaporan.filter(l => l.status==='final' && (l.tglFinal||'').substring(0,7)===nowMonth);
+  document.getElementById('dashStatsK3').innerHTML = `
+    <div class="info-row"><span class="info-label">Lap. Final Bulan Ini</span><span class="info-value fw-bold">${lapBulanIni.length}</span></div>
+    <div class="info-row"><span class="info-label">Total KK (arsip)</span><span class="info-value fw-bold text-danger">${totalKK}</span></div>
+    <div class="info-row"><span class="info-label">Total PAK (arsip)</span><span class="info-value fw-bold text-warning">${lapFinal.reduce((s,l)=>s+(l.pak||0),0)}</span></div>
+    <div class="info-row"><span class="info-label">Perusahaan belum lapor</span><span class="info-value">${Math.max(0, verified.length - [...new Set(lapFinal.map(l=>l.companyId))].length)}</span></div>
+    <div class="info-row"><span class="info-label">Pendaftaran pending</span><span class="info-value text-primary">${pending.length}</span></div>
+  `;
+
+  // Manajemen Perusahaan
+  const q          = (document.getElementById('searchPerusahaan')?.value||'').toLowerCase();
+  const statusF    = document.getElementById('filterStatusP')?.value||'';
+  const filteredP  = companies.filter(c =>
+    (!q || c.nama.toLowerCase().includes(q)) &&
+    (!statusF || c.status === statusF)
+  );
+  const pBody = document.getElementById('perusahaanBody');
+  pBody.innerHTML = filteredP.length === 0
+    ? '<tr><td colspan="8" class="text-center text-muted py-3">Tidak ada data</td></tr>'
+    : filteredP.map(c => {
+        const pw = pengawasList.find(p => p.id === c.pengawasId);
+        const statusLabel = c.status === 'verified' ? '<span class="badge-status badge-disetujui">Aktif</span>' :
+          c.status === 'pending_admin' ? '<span class="badge-status badge-pending">Pending Admin</span>' :
+          '<span class="badge-status badge-returned">Pending Pengawas</span>';
+        return `<tr>
+          <td>${c.nama}</td>
+          <td>${c.wilayah||'—'}</td>
+          <td>${c.bidang||'—'}</td>
+          <td>${(c.tkLk||0)+(c.tkPr||0)}</td>
+          <td>${pw?pw.nama:'<span class="text-muted">—</span>'}</td>
+          <td>${statusLabel}</td>
+          <td>${c.tglDaftar||'—'}</td>
+          <td>
+            ${c.status==='verified'
+              ? `<button class="btn btn-sm btn-outline-warning" style="font-size:11px;" onclick="openGantiPengawasModal('${c.id}')"><i class="bi bi-arrow-repeat"></i></button>`
+              : `<button class="btn btn-sm btn-outline-success" style="font-size:11px;" onclick="openTetapkanModal('${c.id}')"><i class="bi bi-person-check"></i> Tetapkan</button>`}
+          </td>
+        </tr>`;
       }).join('');
-    }
 
-    const psl = document.getElementById('persetujuanList');
-    if (pendingAdmin.length === 0) {
-      psl.innerHTML = '<p class="text-muted">Tidak ada pengajuan perusahaan yang menunggu verifikasi.</p>';
-    } else {
-      psl.innerHTML = pendingAdmin.map(c => {
-        let statusText = '';
-        if (c.status === 'pending_pengawas' && c.notifPengawas) {
-          const pw = pengawasList.find(p => p.id === c.notifPengawas);
-          statusText = `<span class="badge-status badge-pending" style="font-size:11px;">Dikirim ke Pengawas: ${pw?.nama || c.notifPengawas}</span>`;
-        } else {
-          statusText = `<span class="badge-status badge-pending" style="font-size:11px;">Menunggu Penunjukan Pengawas</span>`;
-        }
-        return `<div class="laporan-item">
+  // Manajemen Pengawas
+  const pwBody = document.getElementById('pengawasBody');
+  pwBody.innerHTML = pengawasList.length === 0
+    ? '<tr><td colspan="7" class="text-center text-muted py-3">Belum ada pengawas terdaftar</td></tr>'
+    : pengawasList.map(p => {
+        const binaan = companies.filter(c => c.pengawasId === p.id && c.status === 'verified').length;
+        return `<tr>
+          <td>${p.nama}</td>
+          <td><code style="font-size:11px;">${p.nip}</code></td>
+          <td>${p.jabatan||'—'}</td>
+          <td>${p.wilayah||'—'}</td>
+          <td>${binaan}</td>
+          <td><span class="badge-status ${p.status==='aktif'?'badge-disetujui':'badge-ditolak'}">${p.status==='aktif'?'Aktif':'Non-aktif'}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline-secondary me-1" style="font-size:11px;" onclick="editPengawas('${p.id}')"><i class="bi bi-pencil"></i></button>
+            <button class="btn btn-sm btn-outline-danger" style="font-size:11px;" onclick="hapusPengawas('${p.id}')"><i class="bi bi-trash"></i></button>
+          </td>
+        </tr>`;
+      }).join('');
+
+  // Pendaftaran Baru (Admin)
+  const padl = document.getElementById('pendaftaranAdminList');
+  padl.innerHTML = pending.length === 0
+    ? '<p class="text-muted">Tidak ada pendaftaran yang menunggu tindakan admin.</p>'
+    : pending.map(c =>
+        `<div class="laporan-item border-success-left">
           <div class="d-flex justify-content-between align-items-start">
             <div>
-              <div style="font-size:14px;font-weight:700;">${c.nama}</div>
-              <div style="font-size:12.5px;color:#64748b;">${c.wilayah} · ${c.alamat} · Diajukan: ${c.tglDaftar}</div>
-              <div style="font-size:12.5px;color:#64748b;">Email: ${c.email || '—'}</div>
-              <div style="margin-top:4px;">${statusText}</div>
+              <div class="fw-bold" style="font-size:14px;">${c.nama}</div>
+              <div class="text-muted small">${c.alamat||'—'} · ${c.wilayah||'—'}</div>
+              <div class="mt-1">
+                <span class="badge-status badge-draft me-2">${c.bidang||'—'}</span>
+                <span class="text-muted small">Email: ${c.email||'—'}</span>
+                <span class="text-muted small ms-2">TK est.: ${c.jumlahTk||'—'}</span>
+                <span class="badge-status ${c.status==='pending_admin'?'badge-pending':'badge-returned'} ms-2">
+                  ${c.status==='pending_admin'?'Menunggu Admin':'Menunggu Pengawas'}
+                </span>
+              </div>
+              ${c.alasanRekomen?`<div class="mt-1 small text-muted">Rekomen: ${c.alasanRekomen}</div>`:''}
             </div>
-            <button class="btn btn-sm btn-outline-success ms-2" onclick="openVerifModal('${c.id}')"><i class="bi bi-clipboard-check me-1"></i>Verifikasi</button>
+            <button class="btn btn-sm btn-success flex-shrink-0 ms-2" onclick="openTetapkanModal('${c.id}')"><i class="bi bi-person-check me-1"></i>Tetapkan Pengawas</button>
+          </div>
+        </div>`
+      ).join('');
+
+  // Verifikasi Admin (Menunggu Finalisasi)
+  const val = document.getElementById('verifAdminList');
+  val.innerHTML = lapApproved.length === 0
+    ? '<p class="text-muted">Tidak ada laporan yang menunggu finalisasi.</p>'
+    : lapApproved.map(l => {
+        const c  = companies.find(x => x.id === l.companyId);
+        const pw = pengawasList.find(p => p.id === l.pengawasVerifId);
+        const kkTotal = (l.kkRingan||0)+(l.kkSedang||0)+(l.kkBerat||0)+(l.kkFatal||0);
+        return `<div class="laporan-item border-success-left">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <div class="fw-bold" style="font-size:14px;">${c?.nama||'—'}</div>
+              <div class="text-muted small mb-1">${l.noLaporan||'—'} · ${l.periode} ${l.tahun} · Disetujui: ${l.tglApprove||'—'} · Pengawas: ${pw?.nama||'—'}</div>
+              <div class="d-flex flex-wrap gap-3 mb-1" style="font-size:12px;">
+                <span><i class="bi bi-people me-1 text-muted"></i>TK: ${(l.tkLk||0)+(l.tkPr||0)}</span>
+                <span><i class="bi bi-exclamation-triangle me-1 text-danger"></i>KK: ${kkTotal}</span>
+                <span><i class="bi bi-activity me-1 text-warning"></i>FR: ${l.fr||'—'}</span>
+                <span><i class="bi bi-heart-pulse me-1 text-success"></i>PAK: ${l.pak||0}</span>
+                <span><i class="bi bi-clipboard-check me-1 text-primary"></i>Kelengkapan: ${l.nilaiKelengkapan||'—'}</span>
+                <span><i class="bi bi-star me-1 text-warning"></i>Program K3: ${l.nilaiProgram||'—'}</span>
+                <span><i class="bi bi-shield-check me-1 text-success"></i>Umum: ${l.nilaiUmum||'—'}</span>
+              </div>
+              <div class="small text-muted">Catatan pengawas: ${l.catatanPengawas||'—'}</div>
+            </div>
+            <button class="btn btn-sm btn-success ms-2 flex-shrink-0" onclick="openFinalisasiModal('${l.id}')">
+              <i class="bi bi-archive me-1"></i>Finalisasi
+            </button>
           </div>
         </div>`;
       }).join('');
-    }
 
-    renderPerusahaan(companies);
-
-    const lml = document.getElementById('laporanMasukList');
-    if (approvedLaporan.length === 0) {
-      lml.innerHTML = '<p class="text-muted">Tidak ada laporan yang menunggu finalisasi.</p>';
-    } else {
-      lml.innerHTML = approvedLaporan.map(l => {
+  // Arsip
+  populateFilterArsip(lapFinal);
+  const qArsip  = (document.getElementById('searchArsip')?.value||'').toLowerCase();
+  const thnArsip= document.getElementById('filterArsipTahun')?.value||'';
+  const filteredFinal = lapFinal.filter(l => {
+    const c = companies.find(x => x.id === l.companyId);
+    return (!qArsip || (c?.nama||'').toLowerCase().includes(qArsip)) &&
+           (!thnArsip || l.tahun == thnArsip);
+  });
+  const arsipBody = document.getElementById('arsipBody');
+  arsipBody.innerHTML = filteredFinal.length === 0
+    ? '<tr><td colspan="13" class="text-center text-muted py-3">Belum ada laporan final</td></tr>'
+    : filteredFinal.slice().reverse().map(l => {
         const c = companies.find(x => x.id === l.companyId);
-        return `<div class="laporan-item">
-          <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <div style="font-size:14px;font-weight:700;">${c?.nama || '—'}</div>
-              <div style="font-size:12.5px;color:#64748b;">${l.periode} · Submit: ${l.tglSubmit} · Disetujui Pengawas: ${l.tglApprove}</div>
-              <div style="font-size:12px;color:#92400e;margin-top:3px;"><i class="bi bi-chat-dots me-1"></i>${l.catatanPengawas || '—'}</div>
-              <div style="font-size:12px;color:#64748b;">KK: ${l.kkRingan + l.kkSedang + l.kkBerat + l.kkFatal || l.kecelakaanKerja || 0} | PAK: ${l.pak} | Rapat: ${l.meeting || l.rapatP2K3 || 0} | Inspeksi: ${l.inspeksiK3 || 0}</div>
-            </div>
-            <button class="btn btn-sm btn-outline-primary ms-2" onclick="openLaporanModal('${l.id}')"><i class="bi bi-archive me-1"></i>Finalkan</button>
-          </div>
-        </div>`;
+        const kkTotal = (l.kkRingan||0)+(l.kkSedang||0)+(l.kkBerat||0)+(l.kkFatal||0);
+        return `<tr>
+          <td><code style="font-size:10px;">${l.noLaporan||'—'}</code></td>
+          <td>${c?.nama||'—'}</td>
+          <td>${c?.wilayah||'—'}</td>
+          <td>${l.periode} ${l.tahun||''}</td>
+          <td>${(l.tkLk||0)+(l.tkPr||0)}</td>
+          <td>${kkTotal}</td>
+          <td>${l.fr||'—'}</td>
+          <td>${l.sr||'—'}</td>
+          <td>${l.pak||0}</td>
+          <td>${l.meeting||0}</td>
+          <td>${l.jmlMcu||0}</td>
+          <td>${l.tglFinal||'—'}</td>
+          <td><button class="btn btn-sm btn-outline-secondary" style="font-size:11px;" onclick="openDetailArsip('${l.id}')"><i class="bi bi-eye"></i></button></td>
+        </tr>`;
       }).join('');
-    }
 
-    const tahunFilter = document.getElementById('filterTahun')?.value || '';
-    const arsipData = laporan.filter(l => l.status === 'final' && (!tahunFilter || String(l.tahun) === String(tahunFilter)));
-    document.getElementById('arsipBody').innerHTML = arsipData.length === 0
-      ? '<tr><td colspan="7" class="text-center text-muted py-3">Belum ada laporan diarsipkan</td></tr>'
-      : [...arsipData].reverse().map(l => {
-          const c = companies.find(x => x.id === l.companyId);
-          const pw = pengawasList.find(p => p.id === l.pengawasId);
-          const totalKK = l.kkRingan + l.kkSedang + l.kkBerat + l.kkFatal || l.kecelakaanKerja || 0;
-          return `<tr><td>${c?.nama || '—'}</td><td>${l.periode} ${l.tahun || ''}</td><td>${pw?.nama || '—'}</td><td>${totalKK}</td><td>${l.pak}</td><td>${l.tglFinal || '—'}</td><td><span class="badge-status badge-disetujui">Final</span></td></tr>`;
-        }).join('');
+  // Rekap filter options
+  populateRekapFilters(allLaporan, companies);
+}
 
-    document.getElementById('usersBody').innerHTML = [
-      { nama:'Admin UPTD Wilayah II', role:'Admin', info:'admin@uptd.go.id', password:'admin123', status:'aktif' },
-      ...pengawasList.map(p => ({ nama: p.nama, role:'Pengawas', info: p.nip || '—', password: p.password || 'pw123', status:'aktif' })),
-      ...verified.map(c => ({ nama: c.nama, role:'Perusahaan', info: c.email, password: c.password || '****', status:'aktif' }))
-    ].map(u =>
-      `<tr><td>${u.nama}</td><td><span class="badge-status ${u.role === 'Admin' ? 'badge-ditolak' : u.role === 'Pengawas' ? 'badge-pending' : 'badge-draft'}">${u.role}</span></td><td style="font-size:12.5px;">${u.info}</td><td style="font-size:12.5px;">${u.password}</td><td><span class="badge-status badge-disetujui">Aktif</span></td></tr>`
-    ).join('');
+function populateFilterArsip(lapFinal) {
+  const sel = document.getElementById('filterArsipTahun');
+  const cur = sel.value;
+  const years = [...new Set(lapFinal.map(l => l.tahun).filter(Boolean))].sort((a,b)=>b-a);
+  sel.innerHTML = '<option value="">Semua Tahun</option>' + years.map(y => `<option ${y==cur?'selected':''}>${y}</option>`).join('');
+}
 
-    document.getElementById('statPerusahaan').textContent = verified.length;
-    document.getElementById('statLaporan').textContent = laporan.length;
-    document.getElementById('statKK').textContent = laporan.reduce((s, l) => s + (l.kkRingan + l.kkSedang + l.kkBerat + l.kkFatal || l.kecelakaanKerja || 0), 0);
+function populateRekapFilters(allLaporan, companies) {
+  const sTahun   = document.getElementById('rekapTahun');
+  const sWilayah = document.getElementById('rekapWilayah');
+  const curT = sTahun.value; const curW = sWilayah.value;
+  const years = [...new Set(allLaporan.map(l=>l.tahun).filter(Boolean))].sort((a,b)=>b-a);
+  const wilayas = [...new Set(companies.map(c=>c.wilayah).filter(Boolean))].sort();
+  sTahun.innerHTML   = '<option value="">Semua Tahun</option>' + years.map(y=>`<option ${y==curT?'selected':''}>${y}</option>`).join('');
+  sWilayah.innerHTML = '<option value="">Semua Wilayah</option>' + wilayas.map(w=>`<option ${w==curW?'selected':''}>${w}</option>`).join('');
+}
 
-    document.getElementById('rekapBody').innerHTML = verified.map(c => {
-      const cl = laporan.filter(l => l.companyId === c.id);
-      return `<tr><td>${c.nama}</td><td>${cl.length}</td><td>${cl.filter(l => l.status === 'final').length}</td><td>${cl.reduce((s, l) => s + (l.kkRingan + l.kkSedang + l.kkBerat + l.kkFatal || l.kecelakaanKerja || 0), 0)}</td><td>${cl.reduce((s, l) => s + l.pak, 0)}</td></tr>`;
-    }).join('') || '<tr><td colspan="5" class="text-center text-muted py-3">Belum ada data</td></tr>';
+/* =========================================================
+   PENGAWAS CRUD
+   ========================================================= */
+function openAddPengawasModal() {
+  ['pwEditId','pwNama','pwNip','pwJabatan','pwPassword'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('pwWilayah').value = '';
+  document.getElementById('pwStatus').value  = 'aktif';
+  document.getElementById('addPengawasModal').classList.add('show');
+}
+
+function editPengawas(id) {
+  const p = getPengawasList().find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('pwEditId').value  = p.id;
+  document.getElementById('pwNama').value    = p.nama;
+  document.getElementById('pwNip').value     = p.nip;
+  document.getElementById('pwJabatan').value = p.jabatan || '';
+  document.getElementById('pwWilayah').value = p.wilayah || '';
+  document.getElementById('pwPassword').value= p.password || '';
+  document.getElementById('pwStatus').value  = p.status || 'aktif';
+  document.getElementById('addPengawasModal').classList.add('show');
+}
+
+function simpanPengawas() {
+  const nama     = document.getElementById('pwNama').value.trim();
+  const nip      = document.getElementById('pwNip').value.trim();
+  const jabatan  = document.getElementById('pwJabatan').value.trim();
+  const wilayah  = document.getElementById('pwWilayah').value;
+  const password = document.getElementById('pwPassword').value.trim();
+  const status   = document.getElementById('pwStatus').value;
+  const editId   = document.getElementById('pwEditId').value;
+  if (!nama || !nip || !password) { showToast('Nama, NIP, dan password wajib diisi!'); return; }
+
+  const list = getPengawasList();
+  if (editId) {
+    const idx = list.findIndex(p => p.id === editId);
+    if (idx >= 0) Object.assign(list[idx], { nama, nip, jabatan, wilayah, password, status });
+  } else {
+    if (list.find(p => p.nip === nip)) { showToast('NIP sudah terdaftar!'); return; }
+    list.push({ id:'pw'+Date.now(), nama, nip, jabatan, wilayah, password, status });
   }
-
-  function tambahPengawas() {
-    const nama = document.getElementById('newPwNama').value.trim();
-    const nip = document.getElementById('newPwNip').value.trim();
-    const password = document.getElementById('newPwPassword').value.trim();
-    
-    if (!nama || !nip) {
-      showToast('Nama dan NIP wajib diisi!');
-      return;
-    }
-    
-    if (!password) {
-      showToast('Password wajib diisi!');
-      return;
-    }
-    
-    const pengawasList = getPengawasList();
-    const newId = 'pw' + (Date.now().toString(36));
-    
-    pengawasList.push({
-      id: newId,
-      nama: nama,
-      nip: nip,
-      password: password,
-      status: 'aktif'
-    });
-    
-    savePengawasList(pengawasList);
-    document.getElementById('newPwNama').value = '';
-    document.getElementById('newPwNip').value = '';
-    document.getElementById('newPwPassword').value = '';
-    showToast(`Pengawas ${nama} berhasil ditambahkan!`);
-    loadData();
-  }
-
-  function renderPerusahaan(companies) {
-    const q = (document.getElementById('searchPerusahaan')?.value || '').toLowerCase();
-    const filtered = companies.filter(c => c.nama.toLowerCase().includes(q));
-    document.getElementById('perusahaanBody').innerHTML = filtered.length === 0
-      ? '<tr><td colspan="4" class="text-center text-muted py-3">Belum ada data perusahaan</td></tr>'
-      : filtered.map(c => {
-          let statusBadge = '';
-          if (c.status === 'verified') {
-            statusBadge = '<span class="badge-status badge-disetujui">Aktif</span>';
-          } else if (c.status === 'pending_admin' || c.status === 'pending_pengawas') {
-            statusBadge = '<span class="badge-status badge-pending">Menunggu Verif.</span>';
-          } else {
-            statusBadge = '<span class="badge-status badge-draft">Draft</span>';
-          }
-          return `<tr>
-            <td>${c.nama}</td>
-            <td>${c.wilayah}</td>
-            <td>${statusBadge}</td>
-            <td><button class="btn btn-sm btn-outline-danger" style="font-size:11.5px;" onclick="hapusPerusahaan('${c.id}')"><i class="bi bi-trash"></i></button></td>
-          </tr>`;
-        }).join('');
-  }
-
-  window.filterPerusahaan = function() { renderPerusahaan(getCompanies()); };
-
-  function hapusPerusahaan(id) {
-    if (!confirm('Hapus perusahaan ini dari sistem?')) return;
-    const companies = getCompanies().filter(c => c.id !== id);
-    saveCompanies(companies);
-    showToast('Perusahaan dihapus dari sistem.');
-    loadData();
-  }
-
-  function openVerifModal(companyId) {
-    const pengawasList = getPengawasList();
-    const c = getCompanies().find(x => x.id === companyId);
-    if (!c) return;
-    
-    document.getElementById('vModalNama').textContent = c.nama;
-    document.getElementById('vModalAlamat').textContent = c.alamat;
-    document.getElementById('vModalWilayah').textContent = c.wilayah;
-    document.getElementById('vModalEmail').textContent = c.email || '—';
-    document.getElementById('vModalTglDaftar').textContent = c.tglDaftar || '—';
-    document.getElementById('vModalId').value = companyId;
-    document.getElementById('vModalKode').value = '';
-    
-    const selectPengawas = document.getElementById('vModalPengawas');
-    selectPengawas.innerHTML = '<option value="">-- Pilih Pengawas --</option>' + 
-      pengawasList.map(p => `<option value="${p.id}">${p.nama}${p.nip ? ' - NIP: ' + p.nip : ''}</option>`).join('');
-    
-    if (c.notifPengawas) {
-      selectPengawas.value = c.notifPengawas;
-    }
-    
-    document.getElementById('verifModal').classList.add('show');
-  }
-
-  function setujuiPerusahaan() {
-    const cId = document.getElementById('vModalId').value;
-    const pengawasId = document.getElementById('vModalPengawas').value;
-    let kode = document.getElementById('vModalKode').value.trim();
-    
-    if (!pengawasId) {
-      showToast('Pilih pengawas terlebih dahulu!');
-      return;
-    }
-    
-    const companies = getCompanies();
-    const idx = companies.findIndex(c => c.id === cId);
-    if (idx < 0) return;
-
-    if (!kode) kode = genKode(companies[idx].nama);
-    
-    companies[idx].status = 'pending_pengawas';
-    companies[idx].notifPengawas = pengawasId;
-    companies[idx].pengawasId = pengawasId;
-    companies[idx].password = kode;
-    companies[idx].catatanPengawas = 'Dikirim oleh admin untuk verifikasi pengawas.';
-    companies[idx].rekomenPengawas = null;
-    companies[idx].alasanRekomen = null;
-    
-    saveCompanies(companies);
-    closeModal('verifModal');
-    
-    const pengawasList = getPengawasList();
-    const pw = pengawasList.find(p => p.id === pengawasId);
-    showToast(`✓ Data perusahaan dikirim ke pengawas: ${pw?.nama || pengawasId}`);
-    loadData();
-  }
-
-  function tolakPerusahaan() {
-    if (!confirm('Tolak pengajuan perusahaan ini?')) return;
-    const cId = document.getElementById('vModalId').value;
-    const companies = getCompanies().filter(c => c.id !== cId);
-    saveCompanies(companies);
-    closeModal('verifModal');
-    showToast('Pengajuan perusahaan ditolak dan dihapus.');
-    loadData();
-  }
-
-  function openLaporanModal(laporanId) {
-    const laporan = getLaporan();
-    const l = laporan.find(x => x.id === laporanId);
-    if (!l) return;
-    const c = getCompanies().find(x => x.id === l.companyId);
-    document.getElementById('lModalPerusahaan').textContent = c?.nama || '—';
-    document.getElementById('lModalPeriode').textContent = `${l.periode} ${l.tahun || ''}`;
-    document.getElementById('lModalTglApprove').textContent = l.tglApprove || '—';
-    const totalKK = l.kkRingan + l.kkSedang + l.kkBerat + l.kkFatal || l.kecelakaanKerja || 0;
-    document.getElementById('lModalKK').textContent = totalKK + ' kasus';
-    document.getElementById('lModalPAK').textContent = l.pak + ' kasus';
-    document.getElementById('lModalCatatan').textContent = l.catatanPengawas || '—';
-    document.getElementById('lModalId').value = laporanId;
-    document.getElementById('lModalCatatanAdmin').value = '';
-    document.getElementById('laporanModal').classList.add('show');
-  }
-
-  function finalkanLaporan() {
-    const lId = document.getElementById('lModalId').value;
-    const today = new Date().toISOString().split('T')[0];
-    const laporan = getLaporan();
-    const idx = laporan.findIndex(l => l.id === lId);
-    if (idx >= 0) {
-      laporan[idx].status = 'final';
-      laporan[idx].tglFinal = today;
-      saveLaporan(laporan);
-    }
-    closeModal('laporanModal');
-    showToast('Laporan berhasil difinalkan dan diarsipkan!');
-    loadData();
-  }
-
-  const pageMap = { dashboard:'Dashboard Admin', persetujuan:'Verifikasi Perusahaan', perusahaan:'Daftar Perusahaan', users:'Manajemen User', 'laporan-masuk':'Laporan Disetujui Pengawas', arsip:'Arsip Laporan', statistik:'Statistik & Rekap' };
-
-  function goPage(id) {
-    document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
-    const t = document.getElementById(id);
-    if (t) t.classList.add('active-page');
-    document.getElementById('pageTitle').textContent = pageMap[id] || id;
-    document.querySelectorAll('.nav-link').forEach(l => { l.classList.remove('active'); if (l.dataset.page === id) l.classList.add('active'); });
-    window.scrollTo(0, 0);
-  }
-
-  document.querySelectorAll('.nav-link').forEach(l => l.addEventListener('click', e => { e.preventDefault(); goPage(l.dataset.page); }));
-
-  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-  document.getElementById('verifModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal('verifModal'); });
-  document.getElementById('laporanModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal('laporanModal'); });
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    document.getElementById('toastMsg').textContent = msg;
-    t.style.display = 'block';
-    setTimeout(() => t.style.display = 'none', 4000);
-  }
-
-  function doLogout() {
-    localStorage.removeItem('p2k3_role');
-    window.location.href = 'login.html';
-  }
-
+  savePengawasList(list);
+  closeModal('addPengawasModal');
+  showToast(editId ? 'Data pengawas diperbarui!' : '✅ Pengawas baru berhasil ditambahkan!');
   loadData();
+}
+
+function hapusPengawas(id) {
+  const list   = getPengawasList();
+  const pw     = list.find(p => p.id === id);
+  const binaan = getCompanies().filter(c => c.pengawasId === id && c.status === 'verified').length;
+  if (binaan > 0) { showToast(`Pengawas masih memiliki ${binaan} perusahaan binaan. Pindahkan dulu sebelum menghapus.`); return; }
+  if (!confirm(`Hapus pengawas "${pw?.nama}"?`)) return;
+  savePengawasList(list.filter(p => p.id !== id));
+  showToast('Pengawas dihapus.');
+  loadData();
+}
+
+/* =========================================================
+   TETAPKAN PENGAWAS
+   ========================================================= */
+function openTetapkanModal(companyId) {
+  const c  = getCompanies().find(x => x.id === companyId);
+  if (!c) return;
+  document.getElementById('tpCompanyId').value = companyId;
+  document.getElementById('tpNama').textContent    = c.nama;
+  document.getElementById('tpWilayah').textContent = c.wilayah || '—';
+  document.getElementById('tpBidang').textContent  = c.bidang  || '—';
+  document.getElementById('tpEmail').textContent   = c.email   || '—';
+  document.getElementById('tpTk').textContent      = c.jumlahTk || '—';
+  document.getElementById('tpPassword').value = '';
+  document.getElementById('tpCatatan').value  = '';
+
+  const list = getPengawasList().filter(p => p.status === 'aktif');
+  document.getElementById('tpPengawas').innerHTML = list.length === 0
+    ? '<option value="">Belum ada pengawas aktif</option>'
+    : list.map(p => `<option value="${p.id}">${p.nama} — ${p.wilayah||'—'} (${p.nip})</option>`).join('');
+  document.getElementById('tetapkanPengawasModal').classList.add('show');
+}
+
+function openGantiPengawasModal(companyId) {
+  openTetapkanModal(companyId);
+}
+
+function submitTetapkan() {
+  const cId     = document.getElementById('tpCompanyId').value;
+  const pwId    = document.getElementById('tpPengawas').value;
+  const pass    = document.getElementById('tpPassword').value.trim();
+  const catatan = document.getElementById('tpCatatan').value.trim();
+  if (!pwId)    { showToast('Pilih pengawas binaan terlebih dahulu!'); return; }
+  if (!pass)    { showToast('Password awal perusahaan wajib diisi!'); return; }
+
+  const companies = getCompanies();
+  const idx = companies.findIndex(c => c.id === cId);
+  if (idx < 0) return;
+  companies[idx].status         = 'verified';
+  companies[idx].pengawasId     = pwId;
+  companies[idx].password       = pass;
+  companies[idx].notifPengawas  = null;
+  companies[idx].tglVerifikasi  = new Date().toISOString().split('T')[0];
+  companies[idx].catatanAdmin   = catatan || 'Perusahaan diaktifkan oleh admin.';
+  saveCompanies(companies);
+  closeModal('tetapkanPengawasModal');
+  showToast('✅ Perusahaan diaktifkan! Pengawas binaan telah ditetapkan.');
+  loadData();
+}
+
+/* =========================================================
+   FINALISASI LAPORAN
+   ========================================================= */
+function openFinalisasiModal(lId) {
+  const l = getLaporan().find(x => x.id === lId);
+  if (!l) return;
+  const c = getCompanies().find(x => x.id === l.companyId);
+  const kkTotal = (l.kkRingan||0)+(l.kkSedang||0)+(l.kkBerat||0)+(l.kkFatal||0);
+
+  document.getElementById('fLaporanId').value         = lId;
+  document.getElementById('fPerusahaan').textContent  = c?.nama||'—';
+  document.getElementById('fNoLaporan').textContent   = l.noLaporan||'—';
+  document.getElementById('fPeriode').textContent     = `${l.periode} ${l.tahun||''}`;
+  document.getElementById('fTglSubmit').textContent   = l.tglSubmit||'—';
+  document.getElementById('fTglApprove').textContent  = l.tglApprove||'—';
+  document.getElementById('fTK').textContent          = `${(l.tkLk||0)+(l.tkPr||0)} (L:${l.tkLk||0} P:${l.tkPr||0})`;
+  document.getElementById('fJamKerja').textContent    = `${Number(l.jamKerja||0).toLocaleString('id-ID')} jam-orang`;
+  document.getElementById('fKKTotal').textContent     = `${kkTotal} kejadian`;
+  document.getElementById('fFRSR').textContent        = `FR: ${l.fr||'—'} · SR: ${l.sr||'—'}`;
+  document.getElementById('fPAK').textContent         = `${l.pak||0} kasus`;
+  document.getElementById('fNilaiKelengkapan').textContent = l.nilaiKelengkapan||'—';
+  document.getElementById('fNilaiProgram').textContent= l.nilaiProgram||'—';
+  document.getElementById('fNilaiUmum').textContent   = l.nilaiUmum||'—';
+  document.getElementById('fCatatan').textContent     = l.catatanPengawas||'—';
+  document.getElementById('fCatatanAdmin').value      = '';
+  document.getElementById('finalisasiModal').classList.add('show');
+}
+
+function finalisasiLaporan() {
+  const lId   = document.getElementById('fLaporanId').value;
+  const today = new Date().toISOString().split('T')[0];
+  const laporan = getLaporan();
+  const idx = laporan.findIndex(l => l.id === lId);
+  if (idx < 0) return;
+  laporan[idx].status        = 'final';
+  laporan[idx].tglFinal      = today;
+  laporan[idx].catatanAdmin  = document.getElementById('fCatatanAdmin').value.trim();
+  saveLaporan(laporan);
+  closeModal('finalisasiModal');
+  showToast('✅ Laporan berhasil difinalisasi dan diarsipkan!');
+  loadData();
+}
+
+function tolakLaporan() {
+  const lId   = document.getElementById('fLaporanId').value;
+  const catatan = document.getElementById('fCatatanAdmin').value.trim();
+  if (!catatan) { showToast('Isi alasan pengembalian ke pengawas!'); return; }
+  const today = new Date().toISOString().split('T')[0];
+  const laporan = getLaporan();
+  const idx = laporan.findIndex(l => l.id === lId);
+  if (idx >= 0) {
+    laporan[idx].status        = 'submitted';
+    laporan[idx].tglApprove    = null;
+    laporan[idx].catatanAdmin  = catatan;
+    laporan[idx].dikembalikanAdmin = today;
+    saveLaporan(laporan);
+  }
+  closeModal('finalisasiModal');
+  showToast('Laporan dikembalikan ke pengawas untuk ditinjau ulang.');
+  loadData();
+}
+
+/* =========================================================
+   DETAIL ARSIP
+   ========================================================= */
+function openDetailArsip(lId) {
+  const l = getLaporan().find(x => x.id === lId);
+  if (!l) return;
+  const c  = getCompanies().find(x => x.id === l.companyId);
+  const pw = getPengawasList().find(p => p.id === l.pengawasVerifId);
+  const kkTotal = (l.kkRingan||0)+(l.kkSedang||0)+(l.kkBerat||0)+(l.kkFatal||0);
+
+  document.getElementById('detailArsipTitle').innerHTML = `<i class="bi bi-file-earmark-check me-2 text-success"></i>${l.noLaporan||'Laporan'} — ${c?.nama||'—'}`;
+  document.getElementById('detailArsipBody').innerHTML = `
+    <div class="row g-3">
+      <div class="col-md-6">
+        <h6 class="fw-bold mb-2" style="font-size:12px;">INFORMASI UMUM</h6>
+        <div class="info-panel">
+          <div class="info-row"><span class="info-label">Perusahaan</span><span class="info-value">${c?.nama||'—'}</span></div>
+          <div class="info-row"><span class="info-label">Wilayah</span><span class="info-value">${c?.wilayah||'—'}</span></div>
+          <div class="info-row"><span class="info-label">Periode</span><span class="info-value">${l.periode} ${l.tahun||''}</span></div>
+          <div class="info-row"><span class="info-label">Tgl Submit</span><span class="info-value">${l.tglSubmit||'—'}</span></div>
+          <div class="info-row"><span class="info-label">Tgl Setujui</span><span class="info-value">${l.tglApprove||'—'}</span></div>
+          <div class="info-row"><span class="info-label">Tgl Final</span><span class="info-value">${l.tglFinal||'—'}</span></div>
+          <div class="info-row"><span class="info-label">Pengawas</span><span class="info-value">${pw?.nama||'—'}</span></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h6 class="fw-bold mb-2" style="font-size:12px;">DATA TENAGA KERJA</h6>
+        <div class="info-panel">
+          <div class="info-row"><span class="info-label">TK L / P / Total</span><span class="info-value">${l.tkLk||0} / ${l.tkPr||0} / ${(l.tkLk||0)+(l.tkPr||0)}</span></div>
+          <div class="info-row"><span class="info-label">TK Outsourcing/PKWT</span><span class="info-value">${l.tkOutsourcing||0}</span></div>
+          <div class="info-row"><span class="info-label">TK WNA</span><span class="info-value">${l.tkWna||0}</span></div>
+          <div class="info-row"><span class="info-label">BPJS TK / Kes.</span><span class="info-value">${l.pesertaBpjsTk||0} / ${l.pesertaBpjsKes||0}</span></div>
+          <div class="info-row"><span class="info-label">Jam Kerja Kumulatif</span><span class="info-value">${Number(l.jamKerja||0).toLocaleString('id-ID')} jam-orang</span></div>
+          <div class="info-row"><span class="info-label">Jam Kerja Hilang</span><span class="info-value">${l.jamHilang||0}</span></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h6 class="fw-bold mb-2" style="font-size:12px;">KECELAKAAN KERJA & PAK</h6>
+        <div class="info-panel">
+          <div class="info-row"><span class="info-label">KK Ringan</span><span class="info-value">${l.kkRingan||0}</span></div>
+          <div class="info-row"><span class="info-label">KK Sedang</span><span class="info-value">${l.kkSedang||0}</span></div>
+          <div class="info-row"><span class="info-label">KK Berat</span><span class="info-value">${l.kkBerat||0}</span></div>
+          <div class="info-row"><span class="info-label">KK Fatal (Meninggal)</span><span class="info-value text-danger fw-bold">${l.kkFatal||0}</span></div>
+          <div class="info-row"><span class="info-label">Total KK</span><span class="info-value fw-bold">${kkTotal}</span></div>
+          <div class="info-row"><span class="info-label">Frequency Rate (FR)</span><span class="info-value">${l.fr||'—'}</span></div>
+          <div class="info-row"><span class="info-label">Severity Rate (SR)</span><span class="info-value">${l.sr||'—'}</span></div>
+          <div class="info-row"><span class="info-label">PAK</span><span class="info-value">${l.pak||0}</span></div>
+          <div class="info-row"><span class="info-label">Inspeksi K3</span><span class="info-value">${l.inspeksiK3||0} kali</span></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h6 class="fw-bold mb-2" style="font-size:12px;">KESEHATAN KERJA</h6>
+        <div class="info-panel">
+          <div class="info-row"><span class="info-label">MCU Terakhir</span><span class="info-value">${l.mcuBulan||'—'} ${l.mcuTahun||''}</span></div>
+          <div class="info-row"><span class="info-label">Peserta MCU</span><span class="info-value">${l.jmlMcu||0}</span></div>
+          <div class="info-row"><span class="info-label">Hasil Fit</span><span class="info-value">${l.hasilFit||0}</span></div>
+          <div class="info-row"><span class="info-label">Temp Unfit</span><span class="info-value">${l.hasilTemp||0}</span></div>
+          <div class="info-row"><span class="info-label">Unfit</span><span class="info-value">${l.hasilUnfit||0}</span></div>
+          <div class="info-row"><span class="info-label">Dirujuk RS</span><span class="info-value">${l.dirujuk||0}</span></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h6 class="fw-bold mb-2" style="font-size:12px;">APD & LINGKUNGAN</h6>
+        <div class="info-panel">
+          <div class="info-row"><span class="info-label">Jenis APD</span><span class="info-value">${l.jenisApd||0}</span></div>
+          <div class="info-row"><span class="info-label">Kepatuhan APD</span><span class="info-value">${l.kepatuhanApd||0}%</span></div>
+          <div class="info-row"><span class="info-label">APAR Total/Layak</span><span class="info-value">${l.apar||0}/${l.aparLayak||0}</span></div>
+          <div class="info-row"><span class="info-label">Simulasi Darurat</span><span class="info-value">${l.simulasiDarurat||0} kali</span></div>
+          <div class="info-row"><span class="info-label">B3 Digunakan</span><span class="info-value">${l.gunakanB3||'—'} (${l.jmlB3||0} jenis)</span></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h6 class="fw-bold mb-2" style="font-size:12px;">PENILAIAN PENGAWAS</h6>
+        <div class="info-panel">
+          <div class="info-row"><span class="info-label">Kelengkapan Data</span><span class="info-value">${l.nilaiKelengkapan||'—'}</span></div>
+          <div class="info-row"><span class="info-label">Kepatuhan Program K3</span><span class="info-value">${l.nilaiProgram||'—'}</span></div>
+          <div class="info-row"><span class="info-label">Kondisi Umum K3</span><span class="info-value">${l.nilaiUmum||'—'}</span></div>
+          <div class="info-row"><span class="info-label">Catatan Pengawas</span><span class="info-value small">${l.catatanPengawas||'—'}</span></div>
+          <div class="info-row"><span class="info-label">Catatan Admin</span><span class="info-value small">${l.catatanAdmin||'—'}</span></div>
+        </div>
+      </div>
+      ${(l.tindakan||l.kendala||l.rencana) ? `
+      <div class="col-12">
+        <h6 class="fw-bold mb-2" style="font-size:12px;">DATA KUALITATIF</h6>
+        <div class="info-panel">
+          ${l.tindakan?`<div class="mb-2"><span class="fw-semibold small">Tindakan Perbaikan:</span><div class="text-muted small">${l.tindakan}</div></div>`:''}
+          ${l.kendala ?`<div class="mb-2"><span class="fw-semibold small">Kendala:</span><div class="text-muted small">${l.kendala}</div></div>`:''}
+          ${l.rencana ?`<div class="mb-0"><span class="fw-semibold small">Rencana Ke Depan:</span><div class="text-muted small">${l.rencana}</div></div>`:''}
+        </div>
+      </div>` : ''}
+    </div>`;
+  document.getElementById('detailArsipModal').classList.add('show');
+}
+
+/* =========================================================
+   REKAP & ANALISIS
+   ========================================================= */
+function buildRekap() {
+  const companies    = getCompanies();
+  const allLaporan   = getLaporan();
+  const filterTahun  = document.getElementById('rekapTahun')?.value  || '';
+  const filterWilayah= document.getElementById('rekapWilayah')?.value|| '';
+  const filterPeriode= document.getElementById('rekapPeriode')?.value|| '';
+
+  const lapFinal = allLaporan.filter(l =>
+    l.status === 'final' &&
+    (!filterTahun   || l.tahun   == filterTahun) &&
+    (!filterPeriode || l.periode === filterPeriode)
+  ).filter(l => {
+    if (!filterWilayah) return true;
+    const c = companies.find(x => x.id === l.companyId);
+    return c?.wilayah === filterWilayah;
+  });
+
+  // Agregat
+  const totalKK  = lapFinal.reduce((s,l)=>s+(l.kkRingan||0)+(l.kkSedang||0)+(l.kkBerat||0)+(l.kkFatal||0),0);
+  const totalPAK = lapFinal.reduce((s,l)=>s+(l.pak||0),0);
+  const totalTK  = lapFinal.reduce((s,l)=>s+(l.tkLk||0)+(l.tkPr||0),0);
+  const totalJamKerja= lapFinal.reduce((s,l)=>s+(l.jamKerja||0),0);
+  const aggrFR   = totalJamKerja>0 ? ((totalKK*1000000)/totalJamKerja).toFixed(2) : '—';
+  const totalJamHilang = lapFinal.reduce((s,l)=>s+(l.jamHilang||0),0);
+  const aggrSR   = totalJamKerja>0 ? ((totalJamHilang*1000000)/totalJamKerja).toFixed(2) : '—';
+  const avgAPD   = lapFinal.length>0 ? (lapFinal.reduce((s,l)=>s+(l.kepatuhanApd||0),0)/lapFinal.length).toFixed(1)+'%' : '—';
+
+  document.getElementById('rekapStats').innerHTML = `
+    <div class="col-6 col-md-2"><div class="stat-card"><div class="stat-label">Laporan Final</div><div class="stat-value">${lapFinal.length}</div></div></div>
+    <div class="col-6 col-md-2"><div class="stat-card"><div class="stat-label">Total TK</div><div class="stat-value">${totalTK.toLocaleString('id-ID')}</div></div></div>
+    <div class="col-6 col-md-2"><div class="stat-card"><div class="stat-label">Total KK</div><div class="stat-value text-danger">${totalKK}</div></div></div>
+    <div class="col-6 col-md-2"><div class="stat-card"><div class="stat-label">FR Agregat</div><div class="stat-value text-warning">${aggrFR}</div></div></div>
+    <div class="col-6 col-md-2"><div class="stat-card"><div class="stat-label">SR Agregat</div><div class="stat-value text-orange" style="color:#ea580c;">${aggrSR}</div></div></div>
+    <div class="col-6 col-md-2"><div class="stat-card"><div class="stat-label">Total PAK</div><div class="stat-value text-purple" style="color:#7c3aed;">${totalPAK}</div></div></div>
+  `;
+
+  // Tabel Rekap Kuantitatif
+  const tbody = document.getElementById('rekapBody');
+  tbody.innerHTML = lapFinal.length === 0
+    ? '<tr><td colspan="15" class="text-center text-muted py-3">Tidak ada data laporan final</td></tr>'
+    : lapFinal.map(l => {
+        const c = companies.find(x => x.id === l.companyId);
+        const kkTotal = (l.kkRingan||0)+(l.kkSedang||0)+(l.kkBerat||0)+(l.kkFatal||0);
+        return `<tr>
+          <td style="white-space:nowrap;">${c?.nama||'—'}</td>
+          <td>${l.periode} ${l.tahun||''}</td>
+          <td class="border-start">${l.kkRingan||0}</td>
+          <td>${l.kkSedang||0}</td>
+          <td>${l.kkBerat||0}</td>
+          <td>${l.kkFatal||0}</td>
+          <td class="border-end fw-bold ${kkTotal>0?'text-danger':''}">${kkTotal}</td>
+          <td>${l.fr||'—'}</td>
+          <td>${l.sr||'—'}</td>
+          <td class="border-end">${l.pak||0}</td>
+          <td>${l.meeting||0}</td>
+          <td>${l.inspeksiK3||0}</td>
+          <td>${(l.programs||[]).length}</td>
+          <td class="border-end">${(l.pelatihan||[]).length}</td>
+          <td>${l.jmlMcu||0}</td>
+          <td>${l.kepatuhanApd||0}%</td>
+        </tr>`;
+      }).join('');
+
+  // Rekap Kualitatif
+  const kualitatifEl = document.getElementById('rekapKualitatif');
+  const lapWithIssues = lapFinal.filter(l => l.kendala || l.rencana || (l.kkFatal||0)>0 || (l.nilaiUmum==='Kritis'));
+  kualitatifEl.innerHTML = lapWithIssues.length === 0
+    ? '<p class="text-muted small">Tidak ada isu kualitatif signifikan pada periode ini.</p>'
+    : lapWithIssues.map(l => {
+        const c = companies.find(x => x.id === l.companyId);
+        const flag = (l.kkFatal||0)>0?'danger': l.nilaiUmum==='Kritis'?'danger':'warning';
+        return `<div class="catatan-item ${flag}">
+          <div class="d-flex justify-content-between align-items-start mb-1">
+            <span class="fw-bold" style="font-size:13px;">${c?.nama||'—'}</span>
+            <span class="text-muted small">${l.periode} ${l.tahun||''}</span>
+          </div>
+          ${(l.kkFatal||0)>0?`<div class="small text-danger mb-1"><i class="bi bi-exclamation-triangle-fill me-1"></i>${l.kkFatal} kecelakaan fatal</div>`:''}
+          ${l.kendala?`<div class="small mb-1"><b>Kendala:</b> ${l.kendala}</div>`:''}
+          ${l.tindakan?`<div class="small mb-1"><b>Tindakan:</b> ${l.tindakan}</div>`:''}
+          ${l.rencana?`<div class="small"><b>Rencana:</b> ${l.rencana}</div>`:''}
+        </div>`;
+      }).join('');
+}
+
+/* =========================================================
+   AKUN ADMIN
+   ========================================================= */
+function loadAkunAdmin() {
+  const cred = JSON.parse(localStorage.getItem(SK.adminCred) || '{}');
+  document.getElementById('adminEmail').value     = cred.email    || '';
+  document.getElementById('adminPassLama').value  = '';
+  document.getElementById('adminPassBaru').value  = '';
+  document.getElementById('adminPassKonfirm').value = '';
+  document.getElementById('adminSettErr').style.display = 'none';
+}
+
+function simpanAkunAdmin() {
+  const email     = document.getElementById('adminEmail').value.trim();
+  const passLama  = document.getElementById('adminPassLama').value;
+  const passBaru  = document.getElementById('adminPassBaru').value;
+  const passKonfirm= document.getElementById('adminPassKonfirm').value;
+  const errEl     = document.getElementById('adminSettErr');
+  errEl.style.display = 'none';
+
+  const cred = JSON.parse(localStorage.getItem(SK.adminCred) || '{}');
+  if (!passLama || passLama !== cred.password) {
+    errEl.textContent = 'Password lama salah!'; errEl.style.display = 'block'; return;
+  }
+  if (!email) { errEl.textContent = 'Email tidak boleh kosong!'; errEl.style.display = 'block'; return; }
+  if (passBaru && passBaru !== passKonfirm) {
+    errEl.textContent = 'Konfirmasi password baru tidak cocok!'; errEl.style.display = 'block'; return;
+  }
+  cred.email    = email;
+  if (passBaru) cred.password = passBaru;
+  localStorage.setItem(SK.adminCred, JSON.stringify(cred));
+  showToast('✅ Pengaturan akun admin berhasil disimpan!');
+  loadAkunAdmin();
+}
+
+/* =========================================================
+   UTILITIES
+   ========================================================= */
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+['addPengawasModal','tetapkanPengawasModal','finalisasiModal','detailArsipModal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeModal(id);
+  });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape')
+    ['addPengawasModal','tetapkanPengawasModal','finalisasiModal','detailArsipModal'].forEach(id => closeModal(id));
+});
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3500);
+}
+
+function doLogout() {
+  localStorage.removeItem(SK.role);
+  window.location.href = 'index.html';
+}
+
+Object.assign(window, {
+  goPage, openAddPengawasModal, editPengawas, hapusPengawas, simpanPengawas,
+  openTetapkanModal, openGantiPengawasModal, submitTetapkan,
+  openFinalisasiModal, finalisasiLaporan, tolakLaporan, openDetailArsip,
+  buildRekap, simpanAkunAdmin
+});
+
+loadData();
 </script>
 </body>
 </html>
